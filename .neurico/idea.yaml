@@ -1,0 +1,35 @@
+idea:
+  title: Discovering Novel Biological Mechanisms from Protein Language Models
+  domain: artificial_intelligence
+  hypothesis: 'Protein language models contain internal representations that correspond
+    to previously unknown biological mechanisms. By identifying latent features or
+    circuits that strongly influence protein function predictions but do not align
+    with existing biological annotations, it is possible to uncover new motifs, interaction
+    patterns, or evolutionary constraints not yet characterized experimentally.
+
+    '
+  background:
+    description: 'A particularly promising direction in interpretability is the possibility
+      that protein language models contain internal representations corresponding
+      to previously unknown biological mechanisms. Rather than using interpretability
+      solely to explain model behavior, this project treats the model itself as a
+      source of scientific hypotheses. By identifying latent features or circuits
+      that strongly influence protein function predictions but do not align with existing
+      biological annotations, we may uncover new motifs, interaction patterns, or
+      evolutionary constraints that have not yet been characterized experimentally.
+      Interventions on these internal representations could then be used to generate
+      novel protein variants and test whether the discovered features correspond to
+      real biological phenomena. More broadly, this approach explores whether foundation
+      models can reveal abstractions about biology that are useful, predictive, and
+      potentially beyond current human scientific understanding.
+
+      '
+  metadata:
+    author: Chenhao Tan
+    source: IdeaHub
+    source_url: https://hypogenic.ai/ideahub/idea/pcuCPiF9kp6UCZFk0wHt
+    idea_id: discovering_novel_biological_m_20260519_163028_c32fd899
+    created_at: '2026-05-19T16:30:28.405665'
+    status: submitted
+    github_repo_name: novel-bio-mechanisms-c075-claude
+    github_repo_url: https://github.com/Hypogenic-AI/novel-bio-mechanisms-c075-claude
