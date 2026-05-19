@@ -1,0 +1,30 @@
+\section{Discussion}
+\label{sec:discussion}
+
+\para{What ``dark feature $=$ unknown biology'' really means.} The cleanest scientific takeaway is that the most natural operationalization of the dark-feature hypothesis is \emph{wrong} for the top of the dark tail in \esm. Eight of the ten most-active dark features encode a single well-known sub-sequence---\tgekp between consecutive C2H2 zinc fingers---and the remaining two encode the equally well-known \dry and \npxxy motifs of class-A GPCRs. None of these constitute novel biology. Rather, the \sae has learned representations at a \emph{finer granularity} than \swissprot annotates, and the F1 metric flagged them as ``dark'' only because \swissprot does not separately tag inter-finger linkers or sub-helix motifs. This pattern is consistent with the qualitative glycosyltransferase observation reported anecdotally in \citet{simon2024interplm} but, to our knowledge, has not previously been quantified.
+
+\para{Interpretability without actionability is real in this regime.} Our ablation result places a quantitative case on top of the qualitative warning of \citet{bricken2026actionability} and the antibody-\plm finding of \citet{haque2026antibody}. The five features in \tabref{tab:ablation} have, on inspection, \emph{the strongest biological interpretations we obtained anywhere in the dark cohort}: classical C2H2 zinc-finger linkers (F1 up to 0.84 against the Zinc finger concept) and conserved GPCR motifs. Yet under the simplest causal test---subtract the feature's contribution at the residue where it fires most strongly, and ask how much the next-token distribution moves---these features fail uniformly. The median log$_2$-ratio of $-3.86$ across all 30 top dark features tells us that the same perturbation is roughly $14\times$ more disruptive when applied at residues where the feature is \emph{not} active.
+
+\para{Two non-exclusive explanations.} First, \emph{manifold consistency}: hidden states with feature $f$ present at its top-activating residue lie on a well-traveled region of \esm's activation manifold; removing the feature there shifts the state to a nearby off-manifold point that downstream layers easily reconstruct. The same subtraction at a non-activating residue is more out-of-distribution and breaks downstream reconstruction more severely. Second, \emph{distributed encoding under superposition}: the dark features may be collinear with other features so that any single feature's contribution is recoverable from the rest. Under either explanation, single-feature ablation is the wrong causal test and the negative result is not evidence that the features are biologically inert.
+
+\para{What is actionably novel here.} Three contributions stand on the evidence. (i) On this \plm and this \sae checkpoint, the operationalization ``low \swissprot F1 $\Rightarrow$ unknown biology'' is empirically wrong for the top of the dark tail---a strong negative result that the field needs in writing. (ii) A simple workflow (\sae $\rightarrow$ dark filter $\rightarrow$ entropy null $\rightarrow$ \plm-grounded annotation $\rightarrow$ concept re-check) reliably produces specific, named, testable hypotheses for 10/10 top features in under 10 minutes of LLM time. (iii) The \sae has demonstrably learned biology at a finer granularity than current annotation systems describe, so \sae{}s should be re-positioned as an \emph{annotation-refinement tool} rather than a discovery engine in the small-\plm regime.
+
+\subsection{Limitations}
+
+\textbf{Model scale.} \esm-8M is the smallest model in the ESM family. Features in this model may be heavily superposed and the negative ablation result may not hold on \esmlarge or larger. We treat scaling up as the most natural follow-up.
+
+\textbf{\sae architecture.} We use the pretrained ReLU \sae. \citet{haque2026antibody} report that Ordered \sae{}s give cleaner causal control than top-$k$ \sae{}s on antibody \plm{}s. Our ablation result is specific to the ReLU checkpoint and may not generalize.
+
+\textbf{Single-feature ablation magnitude.} We use the exact contribution $a_{f,r} \cdot \mW_{\text{dec}}[:, f]$ as the perturbation, which is a clean operational definition but sensitive to \esm{}'s downstream robustness. A more aggressive co-ablation of decoder-collinear features could surface causal signal that single-feature ablation hides.
+
+\textbf{Concept coverage.} We evaluate against 16 \swissprot concepts (plus 7 extras) versus \interplm's 433. Many of our residual ``structured dark'' features could be partially recovered by concept types we did not include.
+
+\textbf{LLM verification.} We did not retrieve external literature for every LLM annotation. The \tgekp, \dry, and \npxxy identifications are textbook biology and easy to verify, but for less established hypotheses on broader populations, literature retrieval should be a required next step.
+
+\textbf{\proteingym power.} With $\leq 450$ aa per wild-type and three assays, the per-residue Spearman test is severely underpowered for sparse features. Aggregation across the full 217-assay benchmark would help.
+
+\textbf{Subset size.} Results are reported on a single random subset of 1{,}500 proteins. Sampling variance is not separately quantified; bootstrap CIs on headline numbers would strengthen the claim.
+
+\subsection{Broader implications}
+
+The audit framework here transfers directly to any \plm--\sae pair. Two implications stand out for downstream research. (1) Claims that an \sae has discovered ``unknown biology'' should be qualified: a low-F1 feature against a finite \swissprot concept list is consistent with a sub-domain motif that \swissprot does not separately annotate, not with novel biology. (2) Claims that a feature is \emph{mechanistically active} require causal tests beyond F1, and our negative result suggests single-feature ablation is currently a weak instrument; co-ablation or Ordered-\sae causal probes are stronger candidates.

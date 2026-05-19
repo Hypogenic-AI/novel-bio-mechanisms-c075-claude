@@ -1,0 +1,10 @@
+PDF: papers/Sparse_Autoencoders_LowN_Protein_Function_Prediction.pdf
+Total pages: 15
+Pages per chunk: 3
+
+Chunks:
+  Sparse_Autoencoders_LowN_Protein_Function_Prediction_chunk_001.pdf: pages 1-3
+  Sparse_Autoencoders_LowN_Protein_Function_Prediction_chunk_002.pdf: pages 4-6
+  Sparse_Autoencoders_LowN_Protein_Function_Prediction_chunk_003.pdf: pages 7-9
+  Sparse_Autoencoders_LowN_Protein_Function_Prediction_chunk_004.pdf: pages 10-12
+  Sparse_Autoencoders_LowN_Protein_Function_Prediction_chunk_005.pdf: pages 13-15

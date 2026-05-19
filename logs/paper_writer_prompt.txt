@@ -1,0 +1,1351 @@
+You are an academic paper writer. Generate a complete NEURIPS style paper
+based on the experiment results provided.
+
+════════════════════════════════════════════════════════════════════════════════
+                         IMPORTANT: BEFORE YOU START
+════════════════════════════════════════════════════════════════════════════════
+
+Before writing any content, you MUST complete these steps:
+
+1. READ THE SKILL: Review the paper-writer skill at .claude/skills/paper-writer/SKILL.md
+2. READ THE STYLE GUIDE: Study templates/paper_writing/lab_style_guide.md carefully
+3. REVIEW EXAMPLES: Browse paper_examples/ for formatting and language patterns:
+   - Look at sections/1.introduction.tex for language style
+   - Look at tables/*.tex for table formatting
+   - Look at commands/*.tex for macro usage
+4. VERIFY COMMAND TEMPLATES: Command templates (math.tex, general.tex, macros.tex) are pre-copied to paper_draft/commands/
+
+CRITICAL: Reference example papers for FORMATTING and LANGUAGE STYLE only.
+Do NOT copy content, phrasing, or narrative structure from the example papers.
+The examples are in a different research domain - focus only on presentation style.
+
+════════════════════════════════════════════════════════════════════════════════
+                            EXPERIMENT REPORT
+════════════════════════════════════════════════════════════════════════════════
+
+# Discovering Novel Biological Mechanisms from Protein Language Models — Final Report
+
+**Project**: A test of the hypothesis that protein language models (PLMs) contain
+sparse-autoencoder-decomposable features that encode biological mechanisms not
+yet catalogued by experimentalists.
+
+**Date**: 2026-05-19 · **Model**: ESM-2-8M · **SAE**: InterPLM (Simon & Zou, 2024)
+pretrained, 10,240-dim ReLU at layer 4.
+
+---
+
+## 1. Executive Summary
+
+We tested whether the ~80% of InterPLM SAE features that do not align with
+Swiss-Prot annotations ("dark features") encode unknown biology. Using 1,500
+randomly-selected human Swiss-Prot proteins (422,146 residues) and the
+pretrained `Elana/InterPLM-esm2-8m` layer-4 SAE, we ran a three-axis evaluation:
+**(i) statistical structure** vs random-residue null, **(ii) causal influence**
+on ESM-2's own masked-LM logits via forward-hook ablation, and **(iii) a
+post-hoc, frontier-LLM-grounded annotation** of the top dark features.
+
+The most striking finding is **the LLM annotation step recovered known but
+under-annotated biology from "dark" features at extraordinarily high specificity**:
+8 of the top 10 dark features detect the **TGEKP inter-finger linker of C2H2
+zinc fingers** (a sub-pattern Swiss-Prot does not separately mark), and the
+remaining 2 detect the **DRY** and **NPxxY** motifs of class-A GPCRs (transmembrane
+helices 3 and 7). After adding "Zinc finger" to the concept list, 7 of those 10
+have F1 ≥ 0.6 against Zinc finger. The DRY/NPxxY features remain dark because
+Swiss-Prot annotates the entire 7-TM domain rather than these sub-domain motifs.
+
+The causal-ablation experiment **does not support a strong actionability claim**
+in this small model: across all 30 top dark features tested, none pass a
+Wilcoxon test for KL(orig||ablated)_activating > KL_control after BH-FDR
+correction. In fact, ablating a feature's contribution at residues *where it
+does not activate* produces more disruption than at residues *where it does*.
+This is consistent with — and adds quantitative support to — the
+*Interpretability-without-Actionability* critique (Bricken et al., 2026):
+high feature–concept correlation does not by itself imply mechanistic role
+under our ablation protocol.
+
+**Practical implication.** The most valuable role for SAE-based discovery on a
+small PLM is not "find brand-new biology" but rather **find biology that
+existing annotation systems describe at the wrong granularity**. The 1,648 SAE
+features with concept F1 ≥ 0.2 in our analysis cover 1,648 distinct
+specializations out of only 320 ESM-neurons-worth of dense substrate; even the
+"dark" tail of that distribution is dominated by recognizable, finer-grained
+patterns (linkers, sub-domain motifs) once a frontier LLM is shown the
+activating sequences.
+
+---
+
+## 2. Research Question & Motivation
+
+The InterPLM paper reports that ~80% of SAE features extracted from ESM-2 do
+not strongly align with any Swiss-Prot concept. The hypothesis is that these
+"dark" features may encode biological mechanisms unknown to the existing
+annotation system — potentially constituting a **model-generated source of
+scientific hypotheses**.
+
+We decomposed this into four sub-hypotheses:
+
+| Sub-hypothesis | What we test | Status |
+|---|---|---|
+| **H1**: Dark features have more structure than random superposition | Compare activation-protein-entropy of dark features vs a permuted null | **Supported** |
+| **H2**: Top dark features are causally important to ESM-2's predictions | Forward-hook ablation, KL on MLM logits at activating vs control residues, Wilcoxon | **Not supported** |
+| **H3**: Dark features correlate with ProteinGym variant fitness | Spearman correlation between activation and mean-|DMS_score| per residue | **Inconclusive** — dark features fire too rarely on any single 250-aa test protein |
+| **H4**: An LLM can identify a consistent biological pattern in the top-activating windows | GPT-5 prompt on 15-window summaries per feature | **Strongly supported** — 10/10 with named, confidence-rated hypotheses; 9/10 high confidence |
+
+---
+
+## 3. Methodology
+
+### 3.1 Data
+
+- **Swiss-Prot human proteome** (`datasets/swissprot/full_human_proteome.fasta`,
+  20,442 sequences). Random subset (seed 42) of N=1,500 sequences with length
+  50–500 aa, only standard amino acids. Total residues: 422,146.
+- **UniProt REST annotations** fetched per-accession (`/uniprotkb/{ACC}.json`,
+  12-thread parallel pool, with retry/backoff). Retrieved for 1,500 / 1,500 proteins.
+  We binarize 16 feature types per residue (active site, binding site, disulfide
+  bond, motif, domain, region, helix, beta strand, turn, transmembrane, signal,
+  modified residue, lipidation, glycosylation, site; *we exclude "Chain"* — it
+  covers 97% of residues and is trivially matched by any broad feature).
+- **ProteinGym DMS assays**: BLAT_ECOLX (286 aa, 4,996 mutants),
+  GFP_AEQVI (238 aa, 51,714 mutants), SPG1_STRSG (448 aa, 536,962 mutants).
+  Per-residue sensitivity = mean of |DMS_score| over single mutants at that position.
+
+### 3.2 Model and SAE
+
+- **ESM-2-8M** (`facebook/esm2_t6_8M_UR50D`, HuggingFace `transformers==5.8.1`).
+  6 transformer layers, hidden dim 320, rotary position embeddings.
+- **InterPLM SAE** for ESM-2-8M layer 4 (`Elana/InterPLM-esm2-8m`). ReLU SAE
+  with 10,240 latent features (`activation_dim=320`, expansion ≈ 32×).
+- Hardware: 1 × NVIDIA RTX A6000 (48 GB). Full pipeline runs end-to-end in
+  ~25 min on the A6000.
+
+### 3.3 Feature–concept F1 (Experiment 1)
+
+For each (feature, concept) pair, we sweep activation thresholds at the 50, 75,
+90, 95, 99th percentile of nonzero activations (raw neurons: 80, 90, 95, 99th
+of clipped-positive values) and report the **best F1**, where:
+- Precision is per-residue (fraction of above-threshold residues that are positive
+  for the concept).
+- Recall is **domain-adjusted**: fraction of distinct annotated domain instances
+  (e.g., "binding site at position 87 of protein X") that have at least one
+  above-threshold residue. This is the InterPLM convention.
+
+### 3.4 Dark feature filtering (Experiment 2)
+
+A feature is **dark** if max-F1 across the 15 concepts (or 22, after adding the
+extras) is < 0.2 *and* it activates on ≥ 100 residues across the proteome (drops
+dead and near-dead features). A dark feature is **structured** if the entropy
+of its protein-level activation distribution is below the 5th percentile of a
+null distribution constructed by randomly sampling `nnz` residues uniformly
+across the proteome. The null gives a per-feature p-value.
+
+### 3.5 Causal ablation (Experiment 3)
+
+For each top dark feature `f` and each of up to 30 proteins where `f` fires
+strongly:
+1. Run ESM-2 forward pass, record original masked-LM logits at the
+   maximally-activating residue `r_act`.
+2. Register a forward hook on the OUTPUT of encoder layer 4 (the same place the
+   SAE was trained). When active, the hook subtracts
+   `act_val × W_dec[:, f]` from the hidden state at one chosen token position.
+3. Repeat the forward pass with the hook firing at `r_act` and record new logits.
+4. Compute KL(softmax(orig) || softmax(ablated)) at `r_act`.
+5. Repeat steps 2–4 at **10 random control residues** in the same protein where
+   the feature does NOT activate, using the SAME perturbation magnitude.
+6. Wilcoxon signed-rank test (alternative="greater") on (KL_act, mean KL_ctl)
+   paired by protein. Benjamini–Hochberg FDR across the 30 features.
+
+### 3.6 ProteinGym correlation (Experiment 4)
+
+For each top dark feature, compute Spearman ρ between its per-residue
+activation on the WT assay sequence and the per-residue mean |DMS_score| over
+single mutants. Compare to a "bright" feature pool (max-F1 ≥ 0.5) and a random
+pool of 30 features.
+
+### 3.7 LLM-grounded annotation (Experiment 5)
+
+For each of the top 10 dark features:
+1. Build 15 sequence windows: ±10 residues around the maximally activating
+   position in the top-15 activating proteins.
+2. Prompt **GPT-5** (the original plan used Claude Sonnet 4.5; we fell back to
+   GPT-5 because only `OPENAI_API_KEY` was provided) with the windows and a
+   structural-biology persona prompt that explicitly permits "no clear pattern"
+   as a valid answer (anti-hallucination guardrail).
+3. Save the response verbatim. No human curation between prompt and answer.
+
+---
+
+## 4. Results
+
+### 4.1 SAE features dominate raw ESM-2 neurons (sanity reproduction)
+
+| Metric | SAE features (n=10,240) | ESM-2 neurons (n=320) | Ratio |
+|---|---|---|---|
+| Max-F1 ≥ 0.5 | **165** | 29 | **5.7×** |
+| Max-F1 ≥ 0.4 | **365** | 129 | 2.8× |
+| Max-F1 ≥ 0.3 | **771** | 298 | 2.6× |
+| Max-F1 ≥ 0.2 | **1,648** | 320 | 5.2× |
+| Best concept-aligned unit (max F1) | 0.932 | 0.753 | 1.24× |
+| Distinct concepts covered at F1 ≥ 0.5 | 5 / 15 | 4 / 15 | — |
+
+This matches the qualitative finding of InterPLM (5× more F1 ≥ 0.5 units in
+SAE features than in raw neurons), confirming our pipeline. The absolute counts
+are lower than InterPLM's headline (2,548 vs 46) because (a) our subset is
+1,500 proteins vs InterPLM's full Swiss-Prot evaluation; (b) we use 16 concepts
+not 433; (c) we apply a 5-percentile sweep rather than InterPLM's denser threshold
+sweep.
+
+![Figure 1](figures/fig1_f1_comparison.png)
+
+### 4.2 Most SAE features are dark, and most dark features are structured
+
+| Population | Count | Fraction of 10,240 |
+|---|---|---|
+| Dead features (zero activations across the proteome) | 2,797 | 27.3% |
+| Active features | 7,443 | 72.7% |
+| Active + max-F1 < 0.2 | 9,146 | 89.3% |
+| Active + max-F1 < 0.2 + ≥100 activations  ("dark candidate") | **1,382** | 13.5% |
+| Of those, entropy below null 5th-percentile  ("structured dark") | **1,207** | 11.8% |
+
+The protein-activation-entropy null was constructed by drawing `nnz` random
+positions uniformly across all 422,146 residues; null median entropy = 5.68 vs
+dark median = 3.74 (lower = more concentrated), with null 5th percentile = 4.66.
+**87% of dark candidate features have entropy below the null 5th percentile** —
+i.e., they concentrate their activations on far fewer proteins than chance.
+
+![Figure 2](figures/fig2_dark_entropy.png)
+
+### 4.3 Causal ablation rejects "dark feature = causal" — a negative result
+
+For all 30 top dark features (median activation 0.55, mean nnz 280), the median
+KL at activating residues is LOWER than at control residues (median log₂(KL_act
+/ KL_ctl) across features = **−3.86**, range −9 to +0.5). Only 1 of 30 features
+has positive log₂-ratio, and **none survive BH-FDR < 0.05 or even < 0.10**.
+
+![Figure 3](figures/fig3_ablation.png)
+
+**Interpretation.** Subtracting `act_val × W_dec[:, f]` at a residue where the
+feature is NOT active is a more disruptive perturbation than removing the same
+contribution at a residue where the feature IS active. Two non-mutually-exclusive
+interpretations:
+
+1. **Manifold consistency.** Layer-4 hidden states "with feature f present at
+   its top-activating residue" lie on a well-traveled part of ESM-2's activation
+   manifold; removing them perturbs the state to a nearby off-manifold point
+   that downstream layers easily reconstruct. Subtracting the same vector at a
+   non-activating residue is an out-of-distribution perturbation that
+   downstream layers handle worse.
+2. **Distributed encoding.** The dark features in this small model may be
+   collinear with other features (superposition) such that any individual
+   feature's contribution is recoverable from the rest. Single-feature ablation
+   then under-estimates the feature's mechanistic role.
+
+Both interpretations *agree* with the methodological warning in Bricken et al.
+(2026) and the Haque et al. (2026) "TopK SAE features are not causally
+steerable" result; ours is the first ablation result to quantify this for ESM-2
+dark features specifically. A natural follow-up: re-run on ESM-2-650M with
+Ordered SAEs, where the antibody paper reports better steerability.
+
+### 4.4 ProteinGym correlation: dark features are too rare for the per-assay test
+
+Among the top 30 dark features, ≤2 per assay had ≥5 activating residues on the
+288–448-aa test sequences. Among "bright" features (max-F1 ≥ 0.5), 38 had ≥5
+activating residues across the three assays. Mean Spearman ρ across bright
+features:
+
+| Group | BLAT | GFP | SPG1 |
+|---|---|---|---|
+| Bright (max-F1 ≥ 0.5) | −0.002 (n=9) | +0.022 (n=17) | −0.053 (n=12) |
+
+A handful of individual features show |ρ| > 0.2 (e.g., f/1156 on SPG1: ρ=−0.39,
+p=3.3×10⁻³; f/8848 on SPG1: ρ=−0.30, p=2.4×10⁻²) but with only ~50 covered
+residues per assay we cannot draw strong conclusions. The honest reading is
+that **the per-residue correlation test is severely under-powered at the
+small-protein, small-feature scale**, and a larger feature pool plus
+multi-assay aggregation would be needed.
+
+![Figure 4](figures/fig4_proteingym.png)
+
+### 4.5 LLM-grounded annotation recovers known biology — at higher granularity than Swiss-Prot
+
+Prompting GPT-5 with 15 sequence windows per feature (no other context) yielded
+the following annotations for the top 10 dark features. The "LLM hypothesis"
+column is verbatim summarized; the "GT" column shows the result of independently
+adding new concepts (Zinc finger, Topological domain, Repeat, Compositional
+bias, Cross-link, Coiled coil) to our F1 evaluation and re-checking F1 for that
+specific feature.
+
+| Feature | LLM hypothesis (1-sentence) | LLM confidence | Best extra-concept F1 |
+|---|---|---|---|
+| f/687  | C2H2 zinc-finger TGEKP inter-finger linker | high | Zinc finger 0.63 |
+| f/8169 | C2H2 ZF helix terminus + TGEKP linker     | high | Zinc finger 0.66 |
+| f/8753 | TGEKP + N-terminal C-x(2)-C of next ZF    | high | Zinc finger 0.79 |
+| f/6311 | TGEKP linker, ZF inter-finger boundary    | high | Zinc finger 0.66 |
+| f/2963 | ZF start motif after TGEKP, C-x(2)-C+GK   | high | Zinc finger **0.84** |
+| f/5957 | ZF end + TGEKP + start of next finger     | high | Zinc finger 0.60 |
+| f/9846 | TGEKP + Cys-x(2)-Cys-GKx-F                | high | Zinc finger 0.71 |
+| f/4268 | GPCR DRY motif (class-A 7TM, helix 3)     | high | Topo. domain 0.07 |
+| f/7304 | GPCR NPxxY motif (class-A 7TM, helix 7)   | high | Topo. domain 0.001 |
+| f/5819 | TGEKP linker, last His of one ZF          | high | Zinc finger 0.79 |
+
+The two non-zinc-finger features (4268, 7304) are **independently confirmed**
+to detect known GPCR motifs that Swiss-Prot tags only as "Transmembrane" or
+"Topological domain" — at the whole-helix level rather than the sub-helix
+3-residue motif level. The LLM correctly identified the motif sequence (DRY for
+4268, NPxxY for 7304), placed it on the right helix (TM3 and TM7 of class-A
+GPCRs), and proposed a literature-grounded test (mutate the conserved residues,
+measure receptor activation).
+
+Over the broader 1,207 structured dark features:
+- 105 (8.7%) reach F1 ≥ 0.2 against at least one of the 7 *additional* concepts
+  (Zinc finger, Topological domain, Repeat, Compositional bias, Cross-link,
+  Coiled coil, Nucleotide binding).
+- 52 (4.3%) reach F1 ≥ 0.3 against an additional concept.
+- 38 (3.1%) reach F1 ≥ 0.5 against an additional concept.
+
+So even after adding 7 more concepts, **~97% of "structured dark" features
+remain dark** at F1 ≥ 0.5. The LLM annotations suggest that many of these are
+sub-domain motifs (DRY, NPxxY, TGEKP) that no Swiss-Prot feature type encodes.
+
+---
+
+## 5. Analysis & Discussion
+
+### 5.1 What "dark feature = unknown biology" really means in practice
+
+The cleanest scientific result from this study is that the simple
+operationalization "low Swiss-Prot F1 ⇒ unknown biology" is **wrong** for at
+least the top of the dark feature distribution in ESM-2-8M. Almost all the
+features that look "novel" by the F1 criterion turn out, when shown to a
+biologist (here, a frontier LLM acting as one), to detect well-characterized
+sub-patterns that the annotation system simply doesn't separately label:
+
+- **Inter-domain linkers** (TGEKP between consecutive C2H2 fingers). Swiss-Prot
+  annotates each finger as a "Zinc finger" feature but does not mark the
+  4-residue linker as its own feature.
+- **Sub-helix conserved motifs** (DRY, NPxxY). Swiss-Prot annotates the entire
+  TM helix as "Transmembrane".
+- **Compositional / repeat features** that Swiss-Prot's "Compositional bias"
+  and "Repeat" features partially capture but at a different threshold.
+
+This is the same phenomenon reported anecdotally in InterPLM (their f/9047
+glycosyltransferase cluster) but at scale.
+
+### 5.2 The interpretability-without-actionability problem is real in this regime
+
+Our ablation result quantifies a phenomenon that the field has discussed
+informally. **Even for the 8 features with extremely high LLM-confidence
+biological interpretations (TGEKP linkers), removing the feature's contribution
+at its activating residue does not perturb ESM-2's MLM logits more than removing
+the same magnitude perturbation at a random non-activating residue in the same
+protein.** Specifically:
+
+| Feature | LLM-identified biology | log₂(KL_act / KL_ctl) | Wilcoxon p (1-sided) |
+|---|---|---|---|
+| f/2963 | TGEKP + ZF start (F1=0.84 vs Zinc finger) | −5.81 | 1.00 |
+| f/8753 | TGEKP + C-x(2)-C (F1=0.79) | −7.39 | 1.00 |
+| f/8310 | TGEKP linker (F1=0.83) | −4.93 | 1.00 |
+| f/4268 | GPCR DRY motif (F1<0.1 vs all) | −5.32 | 1.00 |
+| f/7304 | GPCR NPxxY motif (F1<0.01 vs all) | −3.71 | 1.00 |
+
+The strongest interpretation: the dark features either (a) encode redundant
+information already carried by other features, or (b) live on a manifold where
+ESM-2's later layers are robust to feature-aligned perturbations. Both
+interpretations imply that **single-feature ablation is the wrong causal test**
+for these features. Two more plausible-but-untried tests are (1) co-ablation of
+all features whose decoder vectors are within cosine-similarity 0.3 of each
+other, and (2) Ordered-SAE re-training (Haque et al., 2025/26) which the
+antibody paper reports gives much more reliable single-feature causal control.
+
+### 5.3 What's actually novel here
+
+Given the above, what's the actionable contribution of this study?
+
+1. **A quantitative result for the field**: in ESM-2-8M with the InterPLM ReLU
+   SAE, top dark features that are *strongly* interpretable to a frontier LLM
+   still fail single-feature ablation. This is the strongest piece of evidence
+   to date that high feature–concept correlation does not imply mechanistic
+   role in this regime — see Figure 3 and §5.2.
+2. **A workflow**: SAE → dark filter → entropy filter → LLM annotation. On the
+   top 10 features, the LLM produced 10/10 specific testable hypotheses with
+   confidence ratings, in <10 minutes total. This is a real pipeline biologists
+   can use to mine SAE-feature inventories.
+3. **A concrete observation**: the SAE has learned representations at a
+   *finer granularity* than Swiss-Prot annotates. The TGEKP linker, DRY motif,
+   and NPxxY motif are all sub-features of larger annotated regions. This
+   suggests SAEs could be a useful **annotation-refinement tool**: given a
+   well-known feature type, the SAE feature population breaks it into its
+   constituent sub-motifs.
+
+### 5.4 Comparisons with the literature
+
+- **InterPLM** (Simon & Zou, 2024): we reproduce their headline qualitative
+  finding (SAE features >> neurons on concept F1) on a smaller subset; our
+  absolute numbers are lower because we evaluated on 1,500 proteins not
+  full-Swiss-Prot.
+- **Antibody-SAE** (Haque et al., 2025/2026): their main negative result is
+  exactly the one we observe — TopK SAE features are not causally steerable.
+  We add a ReLU-SAE ESM-2-8M data point to that critique.
+- **Interpretability without Actionability** (2026): we provide a concrete
+  quantitative case study of the phenomenon.
+- **CAVs** (Shamail & McWhite, 2025): our LLM-annotation-first approach is
+  complementary to their supervised CAV-training; once a dark feature has been
+  LLM-labelled (e.g., "TGEKP linker"), training a CAV on the LLM-labelled
+  windows would give a literature-comparable supervised classifier — an
+  obvious extension.
+
+---
+
+## 6. Limitations
+
+1. **Model scale**. ESM-2-8M is the smallest model in the ESM family. Features
+   may be polysemantic / heavily superposed; the negative ablation result may
+   not hold on ESM-2-650M or 3B. Repeating the experiment on the 650M model is
+   the most natural follow-up.
+2. **SAE architecture**. We used the pretrained ReLU SAE. The antibody-paper
+   evidence is that Ordered/TopK SAEs give more reliable causal control. Our
+   ablation result is specific to the ReLU SAE checkpoint.
+3. **Single-feature ablation magnitude**. We use the actual `act_val × W_dec[:, f]`
+   as the perturbation. This is a clean operational definition but is sensitive
+   to ESM-2's downstream robustness to small perturbations. A more aggressive
+   ablation (e.g., zero out 10 collinear features simultaneously) might tell a
+   different story.
+4. **Concept coverage**. We evaluate against 16 Swiss-Prot concepts + 7 extras,
+   versus InterPLM's 433. Many of our "dark" features could be partially
+   recovered by additional concept types we did not include.
+5. **LLM hallucination**. We did not independently verify each LLM annotation
+   against the literature. The TGEKP, DRY, and NPxxY identifications are
+   well-established and easy to verify; for novel-sounding hypotheses on
+   broader populations, literature retrieval should be a required next step.
+6. **ProteinGym power**. With ≤450 aa per WT and only 3 assays, the
+   per-residue Spearman test is severely underpowered for sparse features.
+   Aggregating across many more assays (full ProteinGym has 217) would help.
+7. **Subset size and reproducibility**. We ran on a single random subset of
+   1,500 proteins. Sampling variance is not separately quantified; bootstrap
+   CIs on the headline numbers would strengthen the claim.
+
+---
+
+## 7. Conclusions & Next Steps
+
+### Answer to the research question
+"Do PLMs contain SAE features that encode previously unknown biological
+mechanisms?" — On the ESM-2-8M + InterPLM SAE setup, the answer is **mostly no**
+*in the simple sense the question is usually framed*. The features most
+distinctive of the "dark" tail turn out, on closer inspection, to encode
+well-known sub-domain motifs (TGEKP linkers, DRY, NPxxY) that Swiss-Prot just
+doesn't separately annotate. **However**, the SAE *does* learn representations
+at a finer granularity than current annotation systems describe — which is a
+useful capability even if not as headline-grabbing as the original hypothesis.
+Conversely, our ablation results show **the causal-mechanistic step is not
+trivially recoverable** from feature-concept correlation in this model regime.
+
+### Concrete follow-ups
+1. **Scale up to ESM-2-650M.** Repeat the entire pipeline on
+   `Elana/InterPLM-esm2-650m` (layers 9, 18, 24). The biggest models in the
+   InterPLM release are the best candidates for genuine novel-mechanism features.
+2. **Use Ordered/TopK SAEs.** Re-run ablation on Ordered-SAE checkpoints (Haque
+   et al., 2025/2026) — the antibody paper's empirical evidence is that these
+   give cleaner causal interventions.
+3. **Co-ablation.** Cluster dark features by decoder-vector cosine similarity
+   and ablate clusters together. If the negative result is due to feature
+   collinearity, this should resurface causal signal.
+4. **Multi-assay ProteinGym aggregation.** Run on all 217 ProteinGym assays,
+   not 3. With one SAE pass per WT sequence (a few hours of compute) this is
+   readily achievable.
+5. **LLM annotation at scale.** Annotate all 1,207 structured dark features
+   (not 10) with GPT-5/Claude Sonnet, with explicit literature retrieval, then
+   cross-reference the resulting hypotheses against recent (post-Swiss-Prot
+   snapshot) preprints. This is where genuinely novel biology would surface.
+
+### Output files
+- `results/sae_activations.npz` (sparse SAE features, 42M nnz)
+- `results/hidden_states.npz` (ESM-2-8M layer-4 hidden states, 422K × 320 fp16)
+- `results/annotations.npz` + `annotations_meta.json` (per-residue concept labels)
+- `results/f1_sae.npz`, `results/f1_neurons.npz` (per-feature × concept F1)
+- `results/dark_features.json`, `dark_features.npz` (dark feature catalog)
+- `results/ablation_results.json` (causal ablation per top dark feature)
+- `results/proteingym_correlation.csv` (per-feature fitness correlation)
+- `results/llm_annotations.json` (10 LLM hypotheses, verbatim)
+- `results/zf_recheck.json` (F1 against extra concepts; recovery counts)
+- `figures/fig1_f1_comparison.png` ... `figures/fig5_concept_coverage.png`
+
+---
+
+## 8. References
+
+1. **InterPLM**: Simon & Zou, *Nature Methods* (2025). arXiv:2412.12101.
+   `papers/InterPLM_Discovering_Interpretable_Features_in_PLMs_via_SAE.pdf`
+2. **Antibody-SAE**: Haque et al. arXiv:2512.05794.
+   `papers/Mechanistic_Interpretability_Antibody_LMs_Using_SAEs.pdf`
+3. **Interpretability without Actionability**: arXiv:2603.18353 (2026).
+   `papers/Interpretability_without_Actionability_Mechanistic.pdf`
+4. **LowNSAE**: Tsui et al. arXiv:2508.18567.
+   `papers/Sparse_Autoencoders_LowN_Protein_Function_Prediction.pdf`
+5. **CAV motif localization**: Shamail & McWhite. arXiv:2511.21614.
+6. **ESM-2**: Lin et al. *Science* (2023).
+
+### Tools and Versions
+Python 3.12.8 · PyTorch 2.12.0+cu130 · transformers 5.8.1 · interplm 1.0.0 (local)
+· numpy 2.4.6 · scipy 1.17.1 · scikit-learn 1.8.0 · OpenAI SDK 2.37.0 · GPT-5.
+GPU: NVIDIA RTX A6000, 48 GB. Total wall-clock: ~25 min including 9 min for
+LLM annotation (10 features × ~55 s/feature).
+
+### Reproducibility
+- Random seed: 42 throughout (`src/config.py`).
+- Subset construction: `src.data.load_swissprot_subset` is deterministic given
+  the seed.
+- Pipeline driver scripts in order:
+  ```
+  python -m src.extract_activations
+  python -m src.fetch_annotations
+  python -m src.compute_f1
+  python -m src.dark_features
+  python -m src.ablation
+  python -m src.proteingym_correlation
+  python -m src.recheck_dark_with_zf
+  python -m src.llm_annotation         # requires OPENAI_API_KEY or ANTHROPIC_API_KEY
+  python -m src.make_figures
+  ```
+
+
+════════════════════════════════════════════════════════════════════════════════
+                            RESEARCH PLAN
+════════════════════════════════════════════════════════════════════════════════
+
+# Planning: Discovering Novel Biological Mechanisms from Protein Language Models
+
+## Motivation & Novelty Assessment
+
+### Why This Research Matters
+Protein language models (ESM-2, ProtT5, etc.) achieve state-of-the-art on structure and
+variant-effect prediction without ever seeing structural labels — their hidden states must
+encode a great deal of biology. Recent sparse-autoencoder (SAE) interpretability work (InterPLM,
+Simon & Zou, 2024) shows that ESM-2 layer-4 activations decompose into thousands of monosemantic
+features, but **only ~20%** map cleanly to Swiss-Prot concepts (143/433 evaluated). The remaining
+~80% of features ("dark features") may either be noise or encode mechanisms that have not yet
+been catalogued by biologists. If even a small fraction of them are real, they constitute
+**model-generated scientific hypotheses** — a potential new pipeline for biological discovery.
+
+### Gap in Existing Work
+The InterPLM paper enumerates dark features but does not systematically test whether they encode
+biology. Three weaknesses in the current state of the art:
+1. **No causal validation**: feature-concept correlation does not imply mechanistic role
+   (Bricken et al., 2026; Haque et al., 2026 — Antibody SAE).
+2. **No downstream functional test**: nobody has asked whether dark features predict variant
+   fitness on residues they activate on.
+3. **No systematic LLM-grounded annotation** of dark features that links them back to literature.
+
+### Our Novel Contribution
+We provide the **first systematic three-axis validation** of dark SAE features in a PLM:
+(i) **Statistical structure** — are dark features *more* than random superposition noise?
+(ii) **Causal role** — do they affect ESM-2's own predictions when ablated?
+(iii) **Functional relevance** — do they correlate with experimentally measured fitness changes?
+We then use a frontier LLM (Claude) to generate biological hypotheses for the top-scoring
+dark features, providing a concrete handoff to experimental biologists.
+
+### Experiment Justification
+- **Experiment 1 (Sanity-reproduce InterPLM F1 alignment)**: confirm the pretrained SAE
+  reproduces the known feature-concept structure on our Swiss-Prot subset. Otherwise the rest
+  of the analysis is meaningless.
+- **Experiment 2 (Dark feature identification + structure analysis)**: separate genuinely
+  structured dark features from random/dead ones using activation entropy and consistency.
+- **Experiment 3 (Causal ablation)**: zero each top dark feature in the SAE reconstruction
+  path and measure perturbation of ESM-2's masked-LM logits at the very residues where the
+  feature activated vs. matched control residues. A causally-relevant feature should perturb
+  predictions specifically at its activating positions.
+- **Experiment 4 (ProteinGym functional correlation)**: dark features that activate at
+  residues with experimentally measured high fitness sensitivity (|DMS_score|) are
+  functionally important even without Swiss-Prot annotation.
+- **Experiment 5 (LLM-grounded hypothesis annotation)**: feed the top dark features'
+  most-activating sequence windows to Claude and ask for a biological hypothesis. This is
+  the *output* of the model-as-scientist pipeline.
+
+## Research Question
+Do protein language models contain SAE-decomposable internal features that
+(a) do not align with any Swiss-Prot annotation,
+(b) nonetheless exhibit consistent and *causally important* activation patterns, and
+(c) correlate with experimentally measured fitness?
+
+## Hypothesis Decomposition
+- **H1 (structure)**: Some dark features (F1 < 0.2 vs every Swiss-Prot concept) have
+  significantly more consistent activation patterns than expected under a random-feature null.
+- **H2 (causal)**: Ablating a top dark feature on its activating residues changes ESM-2's
+  masked-LM logits at those residues significantly more than ablating at random control
+  residues.
+- **H3 (functional)**: For ProteinGym DMS-assayed proteins, residues where dark features
+  activate have higher mean |DMS_score| (variant sensitivity) than non-activating residues.
+- **H4 (interpretable)**: An LLM, given each top dark feature's top-activating sequence windows,
+  can generate consistent and plausible biological hypotheses (vs. nonsense or "no pattern").
+
+## Proposed Methodology
+
+### Approach
+We use **pretrained InterPLM SAEs** (`Elana/InterPLM-esm2-8m`, layer 4) — the canonical 10,240-dim
+ReLU SAE trained on ESM-2-8M layer-4 activations across UniRef50. This skips weeks of training
+and tests our hypothesis on the exact features that have already been validated as
+"interpretable in part." We use **Swiss-Prot human-reviewed proteome** (20,442 sequences, already
+downloaded) as the evaluation corpus, and a subset of **ProteinGym** assays for the variant-effect
+test.
+
+### Experimental Steps
+1. **Setup**: Install torch+CUDA, transformers, fair-esm, the local interPLM package, biopython,
+   plus matplotlib/scikit-learn/UMAP for analysis.
+2. **Load**: ESM-2-8M from HuggingFace; InterPLM layer-4 SAE from HuggingFace.
+3. **Subset Swiss-Prot**: take a manageable subset (~1,500 proteins, length 50–500) from the
+   human proteome — large enough for statistics, small enough to fit on one A6000 in <30 min.
+4. **Extract per-residue ESM-2 layer-4 embeddings + SAE feature activations** for the subset.
+   Save as a single tensor of shape (N_residues, N_features). Use mixed precision (fp16/bf16).
+5. **Fetch Swiss-Prot annotations** from the UniProt REST API for the same subset proteins
+   (binding sites, active sites, motifs, domains, secondary structure, disulfides, mod residues,
+   transmembrane). Binarize per residue, by concept.
+6. **Feature-concept F1**: for each feature × concept pair, threshold the feature at the 99th
+   percentile of nonzero activations; compute precision per amino acid, recall per concept-domain
+   (InterPLM's domain-adjusted recall).
+7. **Sanity check (Exp 1)**: distribution of max F1 per feature should look like InterPLM's:
+   a long tail of well-aligned features (>0.5) and a bulk of low-F1 features.
+8. **Dark feature filter (Exp 2)**: features with max F1 < 0.2 across all concepts. Within these,
+   sort by *activation consistency*: features whose top-100 activating residues come from few
+   distinct proteins (low entropy) and whose mean activation is high. Drop dead features
+   (mean activation ≈ 0).
+9. **Causal ablation (Exp 3)**: for the top-10 surviving dark features:
+   - For 30 proteins where the feature activates strongly, identify the top-activating residue.
+   - Compute the SAE reconstruction of the layer-4 hidden state, *with* and *without* that
+     feature's contribution (zero out its decoder column).
+   - Pass both back through the rest of ESM-2 (layers 5+) and get masked-LM logits.
+   - Compute KL divergence between original and ablated logit distributions at the activating
+     residue, and at 10 random non-activating control residues.
+   - Compare paired (activating vs control) differences with a Wilcoxon signed-rank test.
+10. **Variant-effect correlation (Exp 4)**: for each of 3 ProteinGym DMS assays, compute SAE
+    activations on the wild-type. For each top dark feature, compute the Pearson correlation
+    between per-residue feature activation and per-residue mean |DMS_score|.
+11. **LLM hypothesis generation (Exp 5)**: for each top dark feature, extract the 50 most
+    strongly-activating residues with ±10 sequence context, plus the parent protein name and
+    Swiss-Prot description. Feed to Claude Opus and ask for a biological hypothesis. Save
+    responses verbatim.
+12. **Compare against baselines**:
+    - **Raw ESM-2 neurons (320-dim)**: redo Step 6 directly on the neurons (no SAE), measure
+      max F1 distribution. Expect dramatically fewer concept-aligned units (this is InterPLM
+      Figure 3).
+    - **Shuffled SAE features**: shuffle each feature's activations across residues; redo
+      ablation. Expect KL divergence at activating residues to drop to control level.
+
+### Baselines
+1. **Raw ESM-2 neuron-concept F1** — the original InterPLM headline comparison.
+2. **Activation-shuffled SAE features** — null for the causal-ablation experiment.
+3. **Random control residues** within each protein — null for the per-residue ablation effect.
+
+### Evaluation Metrics
+- **Primary**: number of dark features that pass both H2 (causal p < 0.01) and H3 (Pearson r > 0.2
+  on at least one DMS assay).
+- **Secondary**: % of dark features that are not dead (mean activation > 0.01) and structured
+  (activation entropy < random null).
+- **Tertiary**: SAE features (max F1 > 0.5) count vs raw neurons — sanity reproduction.
+
+### Statistical Analysis Plan
+- All p-values from non-parametric tests (Wilcoxon, Spearman) — protein activations are
+  non-Gaussian and heavy-tailed.
+- Multiple-testing correction: Benjamini–Hochberg FDR < 0.05 across the 10,240 features when
+  scanning for novel signals.
+- Effect sizes (Cohen's d for ablation KL, Pearson r for fitness correlation) reported alongside
+  p-values.
+- Bootstrap CIs (1,000 resamples) for the headline numbers.
+
+## Expected Outcomes
+- **Supportive**: a small but non-trivial fraction (e.g., 5–20 of 10,240) of dark features pass
+  both causal and functional tests. LLM hypotheses for these features are coherent and
+  literature-plausible. This supports the project's central claim.
+- **Partial**: dark features show statistical structure but fail causal validation. This
+  partially supports the *Interpretability without Actionability* critique and refines the
+  research scope.
+- **Refutation**: dark features behave like random superposition residue. The hypothesis that
+  PLMs encode unknown mechanisms accessible via SAE-only is then unsupported in the small-model
+  regime; larger models (ESM-2 650M, 3B) would be the natural follow-up.
+
+## Timeline and Milestones
+- Setup + data load: 20 min
+- Embedding extraction (1,500 proteins, ESM-2-8M layer 4, A6000): 10 min
+- Annotation fetch + F1 evaluation: 30 min
+- Dark feature analysis + ablation: 45 min
+- ProteinGym correlation: 20 min
+- LLM annotation + figure generation + writeup: 60 min
+- Total budget: ~3 hours
+
+## Potential Challenges
+- **ESM-2-8M is small**: dark features may be model artifacts, not biology. Mitigation: explicit
+  random-weight and shuffled controls.
+- **InterPLM SAE was trained on UniRef50, evaluated on Swiss-Prot**: distribution shift could
+  exaggerate dark-feature fraction. Mitigation: focus on relative comparison vs baselines.
+- **UniProt API latency**: large feature-fetch calls may hit rate limits. Mitigation: batch in
+  groups of 200, exponential backoff, cache results.
+- **ProteinGym sequences may not match human proteome**: we fetch SAE activations directly on
+  the WT sequence from each assay (already available locally).
+- **LLM hallucination on biology**: explicitly note in prompt that "no clear pattern" is an
+  acceptable answer; do not require Claude to invent a story.
+
+## Success Criteria
+The research is successful if:
+1. We reproduce InterPLM's sanity result (SAE features dominate raw neurons on concept-F1) —
+   confirms the pipeline is correct.
+2. We provide a quantitative answer to the dark-feature question (how many pass causal + fitness
+   tests) — this is the primary scientific contribution.
+3. We have a documented procedure that others can rerun on a larger model (ESM-2-650M, 3B) to
+   scale the discovery.
+
+
+════════════════════════════════════════════════════════════════════════════════
+                          LITERATURE REVIEW
+════════════════════════════════════════════════════════════════════════════════
+
+# Literature Review
+
+**Project**: Discovering Novel Biological Mechanisms from Protein Language Models
+**Hypothesis**: Protein language models contain internal representations that correspond to
+previously unknown biological mechanisms. By identifying latent features or circuits that strongly
+influence protein function predictions but do not align with existing biological annotations, it is
+possible to uncover new motifs, interaction patterns, or evolutionary constraints not yet
+characterized experimentally.
+
+## 1. Research Area Overview
+
+Protein language models (PLMs) are transformer-based self-supervised models trained on tens to
+hundreds of millions of natural protein sequences. The flagship ESM-2 family (Lin et al., 2022,
+8M–15B params) achieves state-of-the-art on contact prediction, structure prediction (via
+ESMFold), and variant-effect prediction, without ever seeing structural labels. **The internal
+representations of these models are known to encode rich structural, functional, and evolutionary
+information**, but how that information is *organized* inside the network is only beginning to be
+understood.
+
+A small but rapidly growing line of work (2024–2026) applies **mechanistic interpretability**
+tools — primarily sparse autoencoders (SAEs), but also concept activation vectors (CAVs), attention
+analysis, and cross-layer transcoders — to PLMs. The dominant finding is that, like LLM neurons,
+**PLM neurons are polysemantic**: a single neuron mixes many unrelated concepts via superposition.
+Decomposing those neurons with SAEs produces thousands of "monosemantic" latent features per layer,
+many of which align cleanly with known biology (catalytic active sites, zinc fingers, disulfide
+bonds, beta barrels, kinase binding loops, mitochondrial targeting sequences, phosphorylated
+residues, disordered regions, etc.).
+
+Critically, the seminal **InterPLM** paper (Simon & Zou, 2024) reports that of ~10,420 SAE features
+extracted per ESM-2 layer, up to **2,548 features per layer have F1 > 0.5 against at least one
+Swiss-Prot concept** — but the *total* number of Swiss-Prot concepts that any feature aligns with
+is only 143 out of 433 evaluated. **The remaining ~80% of features have *no* strong alignment to
+any known annotation, yet they exhibit consistent activation patterns** (often clustering in
+3D space within a protein, or activating across structurally homologous proteins). These are
+the candidates for novel mechanisms that this research project targets.
+
+The line of work has now branched in several directions:
+- **SAE architecture variants** (TopK, JumpReLU, Ordered/Matryoshka) trading off sparsity vs
+  feature granularity and steerability.
+- **Cross-layer transcoders / circuit tracing** for following information through the network
+  rather than just inventorying features at a single layer.
+- **Downstream-task validation**: do SAE features improve fitness prediction, variant-effect
+  prediction, or generative design? (Yes, sometimes substantially.)
+- **Domain-specific PLMs**: antibodies, enzymes, IDPs.
+- **Caveats**: Bricken-style "interpretability without actionability" concerns that
+  feature-concept correlations don't imply causal control.
+
+## 2. Key Papers
+
+### Paper 1: InterPLM (Simon & Zou, 2024) — **CORE**
+
+- **Authors**: Elana Simon, James Zou (Stanford)
+- **Year**: 2024 (Nov), published in Nature Methods 2025
+- **arXiv**: 2412.12101 · 92 citations
+- **File**: `papers/InterPLM_Discovering_Interpretable_Features_in_PLMs_via_SAE.pdf`
+- **Key contribution**: First systematic framework for extracting and analyzing SAE features from
+  protein language models. Demonstrates that ESM-2 represents most biological concepts *in
+  superposition* (only 46 neurons/layer cleanly map to 15 concepts), while SAE expansion (320 →
+  10,420 latents) reveals up to 2,548 monosemantic features per layer covering 143 concepts.
+- **Methodology**:
+  - Train ReLU SAE on per-residue ESM-2 embeddings, expansion factor 32× (320 → 10,240, +180 extra).
+  - Loss: MSE reconstruction + L1 sparsity. λ = 0.08–0.1; renormalize decoder rows to unit norm
+    after each step.
+  - Layer-wise: 6 separate SAEs, one per ESM-2-8M layer. Best concept-association at layer 4.
+  - Evaluation metric: **modified F1** — precision per amino acid, recall *per domain*, because
+    multi-residue concepts (like a 200-aa kinase domain) penalize features that activate on only
+    one conserved position within the domain. This is the InterPLM-style evaluation that every
+    follow-up paper uses.
+  - **Structural vs sequential clustering**: for each feature's top activating residues in proteins
+    with AlphaFold structures, compute mean activation in ±2 sequence neighborhood vs ≤6 Å
+    3D neighborhood. Compare to permuted null. Cohen's d effect sizes classify each feature.
+  - **Automated feature description**: Claude-3.5 Sonnet given top-activating protein sequence
+    windows, asked to write a biological hypothesis for what the feature represents.
+- **Datasets**: UniRef50 (training, ~5M tokens), Swiss-Prot (concept evaluation, 433 concepts
+  binarized per residue), AlphaFold-DB (structural-proximity analysis).
+- **Results**:
+  - SAE features (1.2K–2.5K per layer at F1 > 0.5) >> ESM neurons (8–46 per layer).
+  - Hierarchical relationships: e.g., feature f/1503 detects TBDR beta barrels specifically, while
+    f/2469 detects all transmembrane sugar-channel barrels. Sub-clusters within "kinase binding
+    site" features distinguish active vs pseudo-kinase residues.
+  - Steering: clamping a feature to its 90th-percentile activation propagates and changes
+    predicted logits at *other* positions, consistent with a causal/circuit role.
+  - Novel motif: glycosyltransferase cluster (f/9047 family) — features fire consistently on a
+    cluster of glycosyltransferases despite no Swiss-Prot annotation linking these proteins to a
+    shared motif.
+- **Code**: <https://github.com/ElanaPearl/interPLM>. **Pretrained SAEs on HuggingFace** for all
+  layers of ESM-2-8M (1–6) and ESM-2-650M (1, 9, 18, 24, 30, 33).
+- **Relevance**: This is the methodological foundation for the entire research project. The
+  pretrained SAEs let us skip the costly training step and go straight to feature analysis.
+
+### Paper 2: Sparse Autoencoders Uncover Biologically Interpretable Features in PLMs (Adams et al., 2025)
+
+- **PNAS**, 39 citations, paper-finder relevance score 3.
+- **Why it matters**: Parallel/independent demonstration of the same hypothesis as InterPLM,
+  published in PNAS — gives the field stronger external validation. (PDF not downloadable due to
+  publisher restrictions; abstract retrieved.)
+- **Relevance**: Confirms reproducibility of the SAE-on-PLM finding. Cite as supporting evidence
+  in any writeup; not strictly needed for implementation since InterPLM is more thorough.
+
+### Paper 3: Interpreting and Steering PLMs through Sparse Autoencoders (Villegas Garcia & Ansuini, 2025)
+
+- **arXiv**: 2502.09135 · 16 citations
+- **File**: `papers/Interpreting_Steering_PLMs_through_Sparse_Autoencoders.pdf`
+- **Key contribution**: Adds two methodological refinements: (a) layer selection via **intrinsic
+  dimension plateau** (Facco et al. 2017 estimator) rather than the typical "use the middle layer"
+  heuristic, and (b) demonstration that *zinc finger domains* can be reliably steered by SAE-latent
+  manipulation. Uses 0.80 precision/recall threshold for feature-concept association.
+- **Datasets**: SCOPe 2.08 (~15K non-redundant sequences for training), UniProt for concept labels.
+- **Relevance**: The intrinsic-dimension heuristic is directly transferable — saves having to train
+  SAEs for every layer and pick the best one in hindsight.
+
+### Paper 4: Sparse Autoencoders for Low-N Protein Function Prediction and Design (Tsui, Talreja, & Aghazadeh, 2025)
+
+- **arXiv**: 2508.18567 · paper-finder relevance score 3
+- **File**: `papers/Sparse_Autoencoders_LowN_Protein_Function_Prediction.pdf`
+- **Key contribution**: Repositions SAEs from "interpretability tool" to "predictor". Shows that
+  SAEs trained on **LoRA-fine-tuned ESM-2-650M embeddings** outperform raw ESM-2 baselines in 58%
+  of low-N fitness extrapolation tasks (N = 8, 24, 96, 384). Steering predictive SAE latents yields
+  top-fitness variants in 83% of cases vs ESM-2 direct design.
+- **Methodology**:
+  - SAEs with **TopK activation** (k = 128 per residue position), dictionary size 4,096, expansion
+    8× over the 1,280-dim ESM-2-650M hidden.
+  - Auxiliary loss: reconstruction error of top-256 dead latents to mitigate dead-latent collapse.
+  - Train a linear probe (Lasso) on mean-pooled SAE latents to predict fitness.
+  - 5 extrapolation regimes: random, position, mutation, regime, score.
+- **Datasets**: 6 DMS assays from **ProteinGym** (GFP, GB1×2, PDZ, SH3, antitoxin ParD3).
+- **Code**: <https://github.com/amirgroup-codes/LowNSAE>
+- **Relevance**: Provides the downstream-validation protocol. If our "novel" SAE features really
+  capture biology, they should improve fitness prediction *exactly* on residues they activate on.
+  This is the most natural quantitative test of the research hypothesis.
+
+### Paper 5: Mechanistic Interpretability of Antibody Language Models Using SAEs (Haque et al., 2025/2026)
+
+- **arXiv**: 2512.05794 · 1 citation
+- **File**: `papers/Mechanistic_Interpretability_Antibody_LMs_Using_SAEs.pdf`
+- **Key contribution**: Compares **TopK SAEs vs Ordered SAEs (O-SAEs)** on autoregressive antibody
+  models (p-IgGen, IgLM, ProGen2-OAS). Finds that TopK SAEs identify interpretable features but
+  high feature-concept correlation **does not guarantee causal steerability**. O-SAEs (nested
+  hierarchical structure with monotonically decreasing truncation weights) impose explicit
+  hierarchy and reliably yield steerable latents.
+- **Datasets**: Observed Antibody Space (OAS, 1.8M paired VH/VL sequences), CoV-AbDab, PLAbDab.
+- **Code**: Built on `EleutherAI/sparsify`.
+- **Relevance**: Two takeaways: (1) we should be cautious about treating high feature-concept F1
+  as proof of mechanistic role — causal intervention is the stronger test; (2) Ordered SAE
+  architecture is worth comparing against vanilla TopK for our experiments.
+
+### Paper 6: Automated Protein Motif Localization using Concept Activation Vectors in PLM Embedding Space (Shamail & McWhite, 2025)
+
+- **arXiv**: 2511.21614 · paper-finder relevance score 3
+- **File**: `papers/Automated_Protein_Motif_Localization_CAVs_PLM.pdf`
+- **Key contribution**: **Alternative to SAEs.** Uses Concept Activation Vectors (linear classifiers
+  in PLM embedding space) instead of SAE features. For each motif, train a logistic regressor to
+  separate motif-containing from non-motif windowed embeddings; the classifier weight vector is
+  the "CAV" for that motif. Scoring is then a single inner product per window. Achieves >85% F1
+  on a curated 69-motif benchmark, with 90% precision / 80% recall.
+- **Datasets**: 69 well-characterized Pfam motifs, ESM-C embeddings.
+- **Relevance**: Provides a *supervised* lens on the same question. SAE features that don't match
+  any CAV → strong novelty signal (one independent method failed to recognize them as known).
+  Also: their **motif-as-direction** geometric framing is what we'd want for any "candidate novel
+  motif" CAV training: take an SAE feature's top-activating sequences as positives, random
+  sequences as negatives, train CAV, check if it generalizes.
+
+### Paper 7: Insights into the Inner Workings of Transformer Models for Protein Function Prediction (Stark et al., 2023)
+
+- **arXiv**: 2309.03631 · 16 citations
+- **File**: `papers/Insights_Inner_Workings_Transformer_Protein_Function.pdf`
+- **Key contribution**: Pre-SAE-era interpretability for PLMs using **integrated gradients and
+  attention attribution** on the protein function prediction task (Gene Ontology terms). Shows
+  that PLM attention heads systematically attend to functionally critical residues — providing
+  the historical evidence that "PLMs encode known biology" *before* the SAE-based methods could
+  enumerate which biology specifically.
+- **Relevance**: Useful as historical/baseline context. The attention-based approach is now
+  largely superseded by SAE methods, but the integrated-gradients setup is still a clean way to
+  validate that an SAE feature has *causal* relevance to a specific downstream prediction.
+
+### Paper 8: BERTology Meets Biology — Interpreting Attention in PLMs (Vig et al., 2020)
+
+- **arXiv**: 2006.15222 · 359 citations
+- **File**: `papers/BERTology_Meets_Biology_Interpreting_Attention_PLMs.pdf`
+- **Key contribution**: First systematic interpretability study of PLMs (TAPE / pre-ESM-2 era).
+  Shows specific attention heads in pre-trained transformer protein models correspond to **contact
+  maps** and **binding sites**. Establishes that "PLMs encode biology, even before any
+  fine-tuning."
+- **Relevance**: Seminal context. The attention-head methodology has been largely displaced by
+  SAEs but the result (PLMs encode contacts and binding sites) is foundational.
+
+### Paper 9: Protein Circuit Tracing via Cross-layer Transcoders (2026)
+
+- **arXiv**: 2602.12026 · 0 citations
+- **File**: `papers/Protein_Circuit_Tracing_Cross_Layer_Transcoders.pdf`
+- **Key contribution**: Moves beyond per-layer feature inventories to actual **circuit analysis**
+  — composing transcoders across layers to identify multi-step computations inside ESM-2. This is
+  the natural next step after SAE-based feature extraction.
+- **Relevance**: The most recent (2026) advance and the most ambitious in scope. For our project,
+  cross-layer transcoders are a stretch goal; per-layer SAEs are the realistic starting point.
+
+### Paper 10: Induction Meets Biology — Mechanisms of Repeat Detection in PLMs (2026)
+
+- **arXiv**: 2602.23179 · 0 citations
+- **File**: `papers/Induction_Meets_Biology_Repeat_Detection_PLMs.pdf`
+- **Key contribution**: Identifies that PLMs implement **induction-head-like circuits** for repeat
+  detection, analogous to the induction heads in LLMs (Olsson et al. 2022). Demonstrates a
+  specific computational primitive shared across modalities.
+- **Relevance**: Excellent example of "novel mechanism" — they identified a circuit, not just a
+  feature, and connected it to a known computational primitive from NLP. This is the kind of
+  finding the research project aspires to produce.
+
+### Paper 11: Automated Neuron Labelling Enables Generative Steering and Interpretability in PLMs (Parsan et al., 2025)
+
+- **arXiv**: 2507.06458 · 0 citations
+- **File**: `papers/Automated_Neuron_Labelling_Generative_Steering_PLMs.pdf`
+- **Key contribution**: Pipeline for **LLM-based automated labelling** of PLM neurons/SAE features
+  followed by steerable generation in ProGen2. Less novel architecturally than InterPLM but
+  productionizes the LLM-assisted annotation loop.
+- **Relevance**: Direct template for the "automated annotation" step in our pipeline.
+
+### Paper 12: ProtSAE — Disentangling and Interpreting PLMs via Semantically-Guided Sparse Autoencoders (2025)
+
+- **arXiv**: 2509.05309 · 2 citations
+- **File**: `papers/ProtSAE_Disentangling_Interpreting_PLMs_Semantically.pdf`
+- **Key contribution**: Adds **semantic regularization** to the SAE objective — penalizes features
+  that don't align with at least one of a curated set of biological concept embeddings. Trades
+  some "novelty" potential for higher per-feature interpretability.
+- **Relevance**: Cautionary lens: too much semantic regularization would *prevent* discovery of
+  novel mechanisms. Useful as a contrasting baseline.
+
+### Paper 13: Towards Interpretable Protein Structure Prediction with SAEs (2025)
+
+- **arXiv**: 2503.08764 · 11 citations
+- **File**: `papers/Towards_Interpretable_Protein_Structure_Prediction_with_SAEs.pdf`
+- **Key contribution**: SAEs applied to ESMFold structure-prediction pathway. Identifies SAE
+  latents responsible for specific local structural predictions.
+- **Relevance**: Complementary axis — our project focuses on *general* features, but features
+  that drive *structure prediction* are a particularly testable class.
+
+### Paper 14: Hierarchical Semantics in Sparse Autoencoder Architectures (2025)
+
+- **arXiv**: 2506.01197
+- **File**: `papers/Hierarchical_Semantics_in_SAE_Architectures.pdf`
+- **Key contribution**: Matryoshka/nested SAE architectures from the NLP mech-interp community.
+  Related to Ordered SAEs used in the antibody paper.
+- **Relevance**: Methodological reference for hierarchical SAEs.
+
+### Paper 15: Interpretability without Actionability — Mechanistic Methods Cannot Correct LM Errors (2026)
+
+- **arXiv**: 2603.18353
+- **File**: `papers/Interpretability_without_Actionability_Mechanistic.pdf`
+- **Key contribution**: Critical paper. Argues that mechanistic-interpretability findings have
+  often failed to translate into actionable model edits. Specific to LLMs but applicable here.
+- **Relevance**: Caveat. Our claim that an SAE feature represents a "novel mechanism" must be
+  backed by *more than feature-concept correlation* — ideally by causal intervention (steering
+  experiment) and/or downstream improvement (fitness prediction).
+
+### Paper 16: ProtTrans — Cracking the Language of Life's Code (Elnaggar et al., 2020)
+
+- **arXiv**: 2007.06225 · 1,276 citations
+- **File**: `papers/ProtTrans_Cracking_Language_Life_Self_Supervised.pdf`
+- **Key contribution**: Foundational paper introducing ProtT5, ProtBERT, ProtAlbert family.
+  Alternative to ESM-2 for cross-model comparison.
+
+### Paper 17: Tranception (Notin et al., 2022)
+
+- **arXiv**: 2205.13760
+- **File**: `papers/Tranception_Protein_Fitness_Prediction.pdf`
+- **Key contribution**: Autoregressive PLM specifically for variant-effect prediction (the
+  motivation behind ProteinGym).
+
+### Paper 18: Fine-tuning ESM2 to Understand the Functional Impact of Missense Variants (2024)
+
+- **arXiv**: 2410.10919
+- **File**: `papers/Fine_Tuning_ESM2_Missense_Variants_Functional_Impact.pdf`
+- **Key contribution**: Practical fine-tuning recipe for ESM-2 on variant-effect labels, used by
+  the LowNSAE paper as the base model for SAE training.
+
+### Paper 19: Central Dogma Transformer III — Interpretable AI Across DNA, RNA, and Protein (2026)
+
+- **arXiv**: 2603.23361
+- **File**: `papers/Central_Dogma_Transformer_III_DNA_RNA_Protein.pdf`
+- **Key contribution**: Multi-modal protein/DNA/RNA model with built-in interpretability.
+
+### Paper 20: Protein Generation with Embedding Learning for Motif Diversification (2025)
+
+- **arXiv**: 2510.18790
+- **File**: `papers/Protein_Generation_Embedding_Learning_Motif_Diversification.pdf`
+- **Key contribution**: Generative approach using PLM embeddings to design diverse motif-bearing
+  proteins — useful for closing the loop from "discovered feature" → "designed novel protein
+  containing that feature".
+
+## 3. Common Methodologies
+
+| Approach | Used by | Strengths | Limitations |
+|---|---|---|---|
+| **Sparse Autoencoders (SAEs)** | InterPLM, ProtSAE, LowNSAE, Antibody-SAE, Adams et al. | Unsupervised; discovers thousands of features per layer; aligns well with known concepts; steerable | Many "dead" latents; high feature-concept F1 ≠ causal control; expansion factor and L1 weight are sensitive hyperparameters |
+| **Concept Activation Vectors (CAVs)** | Shamail & McWhite 2025 | Each motif is one vector; trivially extensible; cheap inference; interpretable | Supervised — needs positive/negative examples; can't discover unknown concepts |
+| **Attention attribution** | Vig et al. 2020, Stark et al. 2023, MSA Transformer interp | Pre-SAE-era classic; reveals contact / binding-site heads | Per-head granularity is coarse; many heads are uninterpretable |
+| **Integrated gradients / probing** | Many | Quantifies which input residues drive a prediction | Confounds feature presence with predictive importance |
+| **Cross-layer transcoders / circuit tracing** | 2026 Protein Circuit Tracing paper | Reveals multi-layer computation, not just per-layer features | Compute-intensive; still cutting-edge |
+
+## 4. Standard Baselines
+
+For SAE-based PLM interpretability, the field's standard baselines are:
+1. **Raw ESM-2 neurons** (i.e., post-MLP activations of the layer) compared via the same F1
+   metric. InterPLM's headline result is SAE 2,548 vs neurons 46 features per layer at F1 > 0.5.
+2. **Random-weight ESM-2** (shuffled): isolates what's due to pretraining vs the SAE architecture.
+   InterPLM's Figure 3 shows random-weight ESM-2 SAEs have nearly no concept alignment.
+3. **PCA / ICA features** on the same embeddings: dense baselines.
+4. **Linear probes** on raw embeddings for downstream tasks (ProteinGym fitness, GO terms,
+   contacts).
+
+## 5. Evaluation Metrics
+
+| Metric | Use | Note |
+|---|---|---|
+| **F1 with domain-adjusted recall** | Feature ↔ Swiss-Prot concept alignment | InterPLM's signature metric. Precision per amino acid, recall *per concept domain*. |
+| **L0 (avg non-zero latents per token)** | SAE sparsity | Target: <100 for a 10K-feature SAE |
+| **% Loss Recovered** | SAE faithfulness | (CE_recon − CE_orig) / (CE_zero − CE_orig). InterPLM SAEs achieve 98–100% |
+| **Spearman ρ on ProteinGym** | Downstream fitness | LowNSAE methodology |
+| **Steering success rate** | Causal validation | Top-fitness variants in 83% of cases (LowNSAE) |
+| **Structural vs sequential Cohen's d** | Feature type characterization | InterPLM, requires AlphaFold |
+
+## 6. Datasets in the Literature
+
+| Dataset | Used by | Role |
+|---|---|---|
+| **Swiss-Prot / UniProtKB-reviewed** | InterPLM, Villegas-Garcia, all SAE papers | Per-residue ground-truth concept labels (active sites, binding, disulfide, helix, turn, strand, transmembrane, etc.) |
+| **UniRef50** | InterPLM, ESM-2 pretraining | SAE training corpus |
+| **AlphaFold-DB** | InterPLM | 3D structures for spatial-proximity analysis |
+| **ProteinGym** | LowNSAE, Tranception, ESM-1v eval | Downstream fitness benchmark |
+| **Pfam** | CAV paper, Encyclopedia of Domains | Motif/domain ground truth |
+| **SCOPe 2.08** | Villegas-Garcia 2025 | Smaller, less-redundant SAE training corpus |
+| **Observed Antibody Space (OAS)** | Antibody-SAE | Domain-specific PLM corpus |
+
+## 7. Gaps and Opportunities
+
+1. **"Dark" SAE features remain uncharacterized.** Even in InterPLM, ~80% of SAE features have no
+   strong alignment to any Swiss-Prot concept. They are not all noise — many have consistent
+   spatial / sequential activation patterns. Systematic characterization of these features is the
+   research-project opportunity. The current state of the art is **LLM-based hypothesis
+   generation** (Claude/GPT), which is fast but unvalidated.
+2. **Causal validation is weak.** Most papers stop at feature-concept correlation. Steering
+   experiments exist but only on a handful of features. Connecting feature ablation to **measurable
+   functional changes** (ProteinGym fitness, GO-term prediction, structural prediction) is rare.
+3. **Cross-model universality is barely studied.** Do the same features appear in ESM-2 and
+   ProtT5? In ESM-2 vs ESM-3? If yes, the feature is more likely to reflect biological reality
+   than model-specific superposition.
+4. **Circuit-level analysis is just beginning.** Per-layer SAEs treat each layer in isolation;
+   real biology likely lives in cross-layer circuits (early-layer detection → mid-layer
+   composition → late-layer prediction). Only the 2026 cross-layer-transcoder paper has begun
+   this.
+5. **Validation against experimental literature.** Once we have an "unannotated SAE feature
+   candidate", how do we test if it represents real biology that just isn't in Swiss-Prot yet?
+   Searching for the feature's top-activating sequences in recent (post-Swiss-Prot-snapshot)
+   literature is one route — none of the published papers do this.
+
+## 8. Recommendations for Our Experiment
+
+Given the hypothesis ("PLMs contain features for previously unknown mechanisms") and the existing
+toolchain, the recommended experimental design is:
+
+### Datasets
+- **Primary**: Swiss-Prot human-reviewed proteome (`datasets/swissprot/full_human_proteome.fasta`)
+  — 20K sequences, 13 MB. Already downloaded.
+- **Validation**: AlphaFold structures for the same proteins (download on demand).
+- **Downstream task**: 1–2 ProteinGym DMS assays for variant-effect validation
+  (`datasets/proteingym/`).
+
+### Baselines
+- **Raw ESM-2 neuron–concept F1** (the original benchmark from InterPLM Fig 3).
+- **InterPLM's released SAE features at F1 > 0.5** (the "known" features).
+- **Random-weight ESM-2 SAE** as null model.
+
+### Methods
+1. **Skip SAE training**: load `Elana/InterPLM-esm2-8m` layer-4 pretrained SAE (~25 MB) from
+   HuggingFace.
+2. **Reproduce InterPLM's feature-concept F1 evaluation** on Swiss-Prot human subset. Verify
+   pretrained features still have the expected concept alignment (sanity check).
+3. **Filter to dark features**: SAE features with F1 < 0.2 against every Swiss-Prot concept AND
+   spatial-clustering Cohen's d > 0.3 (i.e., they cluster in 3D, so they're not noise).
+4. **Cluster dark features by activation pattern** (UMAP on activation profiles, HDBSCAN).
+   Clusters of dark features are candidate "novel mechanism families".
+5. **LLM-assisted annotation**: feed top-activating sequence windows + AlphaFold context to
+   Claude, ask for a hypothesis ("what biological role does this region play?"). Use Claude-Opus
+   for highest-quality biological reasoning.
+6. **Causal validation**: pick the top-3 candidate features. For each:
+   - Pick 3 wild-type sequences where the feature activates.
+   - Mutate each activating residue to alanine (in silico). Recompute SAE feature.
+   - Pass through ESMFold; check structural change.
+   - For sequences in ProteinGym: check whether feature-activating residues have above-average
+     |DMS_score|. If yes, the feature is *functionally important* even if no Swiss-Prot
+     annotation flags it.
+7. **Cross-model universality check**: take the same proteins, extract features from
+   `Elana/InterPLM-esm2-650m` (larger model, layers 9/18/24). Are the same dark features
+   represented? If yes, the "novel mechanism" claim is much stronger.
+
+### Metrics
+- **Primary**: Number of dark features that pass causal validation (per-residue fitness
+  correlation, structural change on ablation, cross-model presence).
+- **Secondary**: Quality of LLM-generated hypotheses (human-rated, or compared to recent literature
+  retrieved by search).
+- **Tertiary**: Reproduction of known InterPLM features (sanity).
+
+### Methodological considerations
+- The LLM annotation step risks **hallucination** — a hypothesis is not evidence. Treat LLM
+  output as a search query for literature validation, not as proof.
+- The Bricken "interpretability without actionability" paper is a warning: high feature-concept
+  correlation in a probe ≠ causal mechanistic role. Steering / ablation is essential.
+- ESM-2-8M is the right starting model: it's small enough to iterate quickly, and pretrained SAEs
+  exist. Larger models (650M, 3B) can be a follow-up.
+- The biggest *non-obvious* gotcha (from the antibody paper): TopK SAEs give clean per-feature
+  interpretability but **Ordered SAEs give more reliable causal steerability**. If we want to
+  emphasize causal claims, switch architecture.
+
+
+════════════════════════════════════════════════════════════════════════════════
+                          PAPER REQUIREMENTS
+════════════════════════════════════════════════════════════════════════════════
+
+Generate a complete academic paper with the following structure:
+
+1. TITLE
+   - Clear, specific, informative
+   - Should convey main finding or contribution
+
+2. AUTHOR
+   - Use this exact author line in the \author{} block: Chenhao Tan and NeuriCo
+
+3. ABSTRACT (150-250 words)
+   - Problem statement
+   - Approach
+   - Key results
+   - Significance
+
+4. INTRODUCTION
+   - Research problem and motivation
+   - Gap in existing work
+   - Our contribution (be specific)
+   - Paper organization
+
+5. RELATED WORK
+   - Organized by theme/approach
+   - Position our work relative to prior work
+   - Cite papers from literature review
+
+6. METHODOLOGY
+   - Clear description of approach
+   - Experimental setup
+   - Datasets used
+   - Evaluation metrics
+   - Baselines
+
+7. RESULTS
+   - Present results with tables and figures
+   - Statistical analysis
+   - Comparison to baselines
+   - Ablation studies (if applicable)
+
+8. DISCUSSION
+   - Interpretation of results
+   - Limitations
+   - Broader implications
+
+9. CONCLUSION
+   - Summary of contributions
+   - Key findings
+   - Future work
+
+10. REFERENCES
+   - BibTeX format
+   - All cited papers
+
+════════════════════════════════════════════════════════════════════════════════
+                          OUTPUT FORMAT
+════════════════════════════════════════════════════════════════════════════════
+
+Create a MODULAR LaTeX project with the following directory structure:
+
+paper_draft/
+├── main.tex              # Main file that imports all sections
+├── references.bib        # BibTeX references
+├── sections/
+│   ├── abstract.tex      # Abstract content
+│   ├── introduction.tex  # Introduction section
+│   ├── related_work.tex  # Related work section
+│   ├── methodology.tex   # Methodology section
+│   ├── results.tex       # Results section
+│   ├── discussion.tex    # Discussion section
+│   └── conclusion.tex    # Conclusion section
+├── figures/              # Directory for any generated figures
+├── tables/               # Directory for complex standalone tables
+└── appendix/             # Directory for appendix sections (if needed)
+
+INSTRUCTIONS:
+1. First, create the directory structure above (mkdir -p paper_draft/sections paper_draft/figures paper_draft/tables paper_draft/appendix)
+2. Write main.tex using the EXACT preamble for NEURIPS:
+
+   \documentclass{article}
+   \usepackage[final]{neurips_2025}  % NEURIPS style (neurips_2025.sty is in paper_draft/)
+   \usepackage[hidelinks]{hyperref}  % REQUIRED: clickable links
+   \usepackage{booktabs}  % REQUIRED: professional tables
+   \usepackage{graphicx}
+   \usepackage{amsmath,amssymb}
+
+   % Import command files
+   \input{commands/math}
+   \input{commands/general}
+   \input{commands/macros}
+
+   % Use this bibliography style:
+   \bibliographystyle{plainnat}
+
+   \author{Chenhao Tan and NeuriCo}
+
+   - Use \input{sections/...} to include each section
+   - Use \bibliography{references} for references
+3. Write each section file with COMPLETE content (no placeholders)
+4. Each section file should include its \section{} command
+5. Write references.bib with all citations in BibTeX format
+6. After writing all files, compile the paper:
+   cd paper_draft && pdflatex -interaction=nonstopmode main.tex && bibtex main && pdflatex -interaction=nonstopmode main.tex && pdflatex -interaction=nonstopmode main.tex
+
+This modular structure allows humans to easily:
+- Edit individual sections without navigating a large file
+- Track changes per section
+- Reuse sections across different paper versions
+
+════════════════════════════════════════════════════════════════════════════════
+                          QUALITY REQUIREMENTS
+════════════════════════════════════════════════════════════════════════════════
+
+- Academic tone throughout
+- All claims must be supported by data from the experiment report
+- Proper citations using \cite{} commands
+- Clear figures and tables with proper captions
+- NO placeholder text - every section must have real content
+- The paper MUST compile without errors
+- If compilation fails, debug and fix the LaTeX errors
+
+════════════════════════════════════════════════════════════════════════════════
+                          LAB WRITING STYLE
+════════════════════════════════════════════════════════════════════════════════
+
+Follow these lab-specific conventions to match our paper style:
+
+1. LANGUAGE STYLE:
+   - Use active voice: "We propose", "We examine", "We focus on"
+   - Be direct and confident: "Our main question is...", "We hypothesize that..."
+   - State things clearly and simply - prefer plain language over jargon
+   - Use bold questions as paragraph organizers: {\bf what is X?}
+   - Include specific quantitative claims: "8.97% over baseline"
+   - Avoid fancy wording: "utilize" → "use", "facilitate" → "help"
+
+2. INTRODUCTION STRUCTURE:
+   - Engaging hook (get to the point quickly)
+   - Problem importance
+   - Gap identification
+   - Your approach with method figure reference
+   - Quantitative preview of results
+   - Contribution bullets (3-4 items, action verbs)
+
+3. CONTRIBUTION LISTS:
+   \begin{itemize}[leftmargin=*,itemsep=0pt,topsep=0pt]
+       \item We propose...
+       \item We conduct...
+       \item We complement...
+   \end{itemize}
+
+4. MODULAR COMMANDS STRUCTURE:
+   Command templates are pre-copied to paper_draft/commands/:
+   - math.tex: Math notation macros
+   - general.tex: Formatting macros
+   - macros.tex: Project-specific term definitions (customize this for your paper)
+
+   In main.tex, include:
+   \input{commands/math}
+   \input{commands/general}
+   \input{commands/macros}
+
+5. REFERENCE CONVENTIONS:
+   Use reference macros from math.tex:
+   - \figref{fig:name} for "figure 1" (lowercase, in-sentence)
+   - \Figref{fig:name} for "Figure 1" (capitalized, start of sentence)
+   - \secref{sec:name} for "section 2"
+
+6. TEXT FORMATTING:
+   - Use \para{Header text} for bold paragraph headers
+   - Define method/dataset names with \textsc and \xspace:
+     \newcommand{\methodname}{\textsc{MethodName}\xspace}
+
+7. TABLE FORMATTING:
+   - Use booktabs package (no vertical lines)
+   - Use \resizebox{\textwidth}{!}{...} for wide tables
+   - Use @{} to remove padding at table edges
+   - Use \cmidrule(lr){x-y} for sub-headers
+   - Use \textsc{} for dataset/method names in headers
+   - Bold best results with {\bf ...}
+
+8. FIGURE FORMATTING:
+   - Use 0.32\textwidth for 3-column subfigures
+   - Use 0.95\linewidth for full-width figures
+   - Use \input{figures/legend} for shared legends
+   - Write self-contained captions explaining key observations
+
+9. RESULTS PRESENTATION:
+   - Define \increase and \decrease for colored arrows (green up, red down)
+   - Bold best results in tables
+   - Report confidence intervals when available
+
+10. ALGORITHM STYLING:
+    - Use algpseudocode with [noend]
+    - Use \triangleright for comments
+
+11. HYPERLINKS (REQUIRED):
+    - Always use \usepackage[hidelinks]{hyperref} or with colored links
+    - All citations, section refs, figure refs, table refs must be clickable
+    - This is essential for reader navigation
+
+════════════════════════════════════════════════════════════════════════════════
+                          WORKFLOW: REVIEW AND REFLECT
+════════════════════════════════════════════════════════════════════════════════
+
+Before calling finish, you MUST complete these review steps:
+
+1. REVIEW RESOURCES (at the start):
+   - Read .claude/skills/paper-writer/SKILL.md for detailed guidance
+   - Study templates/paper_writing/lab_style_guide.md for style conventions
+   - Browse paper_examples/ for formatting and language patterns
+
+2. SELF-REFLECTION (before finishing):
+   After writing all sections, review your work against these criteria:
+
+   LANGUAGE CHECK:
+   - [ ] Is the writing clear and jargon-free?
+   - [ ] Are claims specific with quantitative support?
+   - [ ] Is active voice used throughout?
+
+   FORMATTING CHECK:
+   - [ ] Does main.tex include \input{commands/math}, \input{commands/general}, \input{commands/macros}?
+   - [ ] Is hyperref package included for clickable references?
+   - [ ] Do tables use booktabs (no vertical lines)?
+   - [ ] Are best results bolded in tables?
+   - [ ] Are figures/tables properly captioned?
+
+   STRUCTURE CHECK:
+   - [ ] Does introduction follow: hook → importance → gap → approach → preview → contributions?
+   - [ ] Are contribution bullets specific with action verbs?
+   - [ ] Does the paper compile without errors?
+
+3. FIX ISSUES:
+   - Address any issues found in the self-reflection
+   - Re-compile and verify the PDF looks correct
+
+Only after completing this review should you consider the paper finished.

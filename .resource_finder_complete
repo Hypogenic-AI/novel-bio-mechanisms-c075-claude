@@ -1,0 +1,19 @@
+Resource finding phase completed successfully.
+Timestamp: 2026-05-19T16:55:00Z
+Papers downloaded: 20
+Datasets prepared: 5 directories (Swiss-Prot human proteome and 3 ProteinGym assays partially downloaded; others with full download instructions)
+Repositories cloned: 6 (interPLM, LowNSAE, sparsify, SAELens, esm, ProtTrans)
+
+Key artifacts ready for the experiment runner:
+- papers/InterPLM_Discovering_Interpretable_Features_in_PLMs_via_SAE.pdf (core methodology)
+- Pretrained SAEs for ESM-2-8M and ESM-2-650M available on HuggingFace at Elana/InterPLM-esm2-{8m,650m}
+- datasets/swissprot/full_human_proteome.fasta (20,442 reviewed human sequences)
+- datasets/proteingym/ProteinGym_substitutions/ (3 DMS assays: GFP, GB1, BLAT) for downstream validation
+- code/interPLM/ - end-to-end SAE training, evaluation, and feature analysis pipeline
+- code/LowNSAE/ - SAE-based fitness prediction baseline
+
+Recommended starting point: load Elana/InterPLM-esm2-8m layer-4 SAE and reproduce
+InterPLM's Figure 3 (feature-vs-Swiss-Prot-concept F1), then filter to "dark" features
+(F1 < 0.2 across all concepts) for novel-mechanism candidate discovery.
+
+See resources.md for full catalog and recommended experimental design.

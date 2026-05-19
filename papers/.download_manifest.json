@@ -1,0 +1,92 @@
+[
+  {
+    "arxiv_id": "2412.12101",
+    "filename": "InterPLM_Discovering_Interpretable_Features_in_PLMs_via_SAE.pdf",
+    "size_kb": 22586
+  },
+  {
+    "arxiv_id": "2502.09135",
+    "filename": "Interpreting_Steering_PLMs_through_Sparse_Autoencoders.pdf",
+    "size_kb": 1458
+  },
+  {
+    "arxiv_id": "2503.08764",
+    "filename": "Towards_Interpretable_Protein_Structure_Prediction_with_SAEs.pdf",
+    "size_kb": 2549
+  },
+  {
+    "arxiv_id": "2509.05309",
+    "filename": "ProtSAE_Disentangling_Interpreting_PLMs_Semantically.pdf",
+    "size_kb": 5252
+  },
+  {
+    "arxiv_id": "2512.05794",
+    "filename": "Mechanistic_Interpretability_Antibody_LMs_Using_SAEs.pdf",
+    "size_kb": 7215
+  },
+  {
+    "arxiv_id": "2508.18567",
+    "filename": "Sparse_Autoencoders_LowN_Protein_Function_Prediction.pdf",
+    "size_kb": 6045
+  },
+  {
+    "arxiv_id": "2506.01197",
+    "filename": "Hierarchical_Semantics_in_SAE_Architectures.pdf",
+    "size_kb": 4529
+  },
+  {
+    "arxiv_id": "2602.12026",
+    "filename": "Protein_Circuit_Tracing_Cross_Layer_Transcoders.pdf",
+    "size_kb": 19227
+  },
+  {
+    "arxiv_id": "2602.23179",
+    "filename": "Induction_Meets_Biology_Repeat_Detection_PLMs.pdf",
+    "size_kb": 2357
+  },
+  {
+    "arxiv_id": "2507.06458",
+    "filename": "Automated_Neuron_Labelling_Generative_Steering_PLMs.pdf",
+    "size_kb": 2971
+  },
+  {
+    "arxiv_id": "2511.21614",
+    "filename": "Automated_Protein_Motif_Localization_CAVs_PLM.pdf",
+    "size_kb": 7105
+  },
+  {
+    "arxiv_id": "2006.15222",
+    "filename": "BERTology_Meets_Biology_Interpreting_Attention_PLMs.pdf",
+    "size_kb": 2756
+  },
+  {
+    "arxiv_id": "2309.03631",
+    "filename": "Insights_Inner_Workings_Transformer_Protein_Function.pdf",
+    "size_kb": 1774
+  },
+  {
+    "arxiv_id": "2205.13760",
+    "filename": "Tranception_Protein_Fitness_Prediction.pdf",
+    "size_kb": 1163
+  },
+  {
+    "arxiv_id": "2410.10919",
+    "filename": "Fine_Tuning_ESM2_Missense_Variants_Functional_Impact.pdf",
+    "size_kb": 2500
+  },
+  {
+    "arxiv_id": "2603.23361",
+    "filename": "Central_Dogma_Transformer_III_DNA_RNA_Protein.pdf",
+    "size_kb": 2915
+  },
+  {
+    "arxiv_id": "2603.18353",
+    "filename": "Interpretability_without_Actionability_Mechanistic.pdf",
+    "size_kb": 710
+  },
+  {
+    "arxiv_id": "2510.18790",
+    "filename": "Protein_Generation_Embedding_Learning_Motif_Diversification.pdf",
+    "size_kb": 6895
+  }
+]

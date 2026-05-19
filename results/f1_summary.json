@@ -1,0 +1,62 @@
+{
+  "n_residues": 422146,
+  "n_features": 10240,
+  "n_neurons": 320,
+  "concepts": [
+    "Active site",
+    "Binding site",
+    "Disulfide bond",
+    "Motif",
+    "Domain",
+    "Region",
+    "Helix",
+    "Beta strand",
+    "Turn",
+    "Transmembrane",
+    "Signal",
+    "Modified residue",
+    "Lipidation",
+    "Glycosylation",
+    "Site"
+  ],
+  "sae_percentile_sweep": [
+    50,
+    75,
+    90,
+    95,
+    99
+  ],
+  "neu_percentile_sweep": [
+    80,
+    90,
+    95,
+    99
+  ],
+  "sae": {
+    "n_F1_ge_0_5": 165,
+    "n_F1_ge_0_4": 365,
+    "n_F1_ge_0_3": 771,
+    "n_F1_lt_0_2": 9146,
+    "max_F1_quantiles": {
+      "p50": 0.0025957180187106133,
+      "p90": 0.2202906757593155,
+      "p99": 0.5651671290397644,
+      "max": 0.9317421913146973
+    }
+  },
+  "neurons": {
+    "n_F1_ge_0_5": 29,
+    "n_F1_ge_0_4": 129,
+    "n_F1_ge_0_3": 298,
+    "max_F1_quantiles": {
+      "p50": 0.3854866027832031,
+      "p90": 0.4971981346607208,
+      "p99": 0.6387640833854675,
+      "max": 0.7528327703475952
+    }
+  },
+  "n_concepts_covered_at_05": {
+    "sae": 5,
+    "neurons": 4
+  }
+}

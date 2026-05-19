@@ -1,0 +1,27 @@
+{
+  "success": true,
+  "stages": {
+    "resource_finder": {
+      "success": true,
+      "completion_marker": "/workspaces/novel-bio-mechanisms-c075-claude/.resource_finder_complete",
+      "outputs": {
+        "literature_review": "/workspaces/novel-bio-mechanisms-c075-claude/literature_review.md",
+        "resources_catalog": "/workspaces/novel-bio-mechanisms-c075-claude/resources.md",
+        "papers_dir": "/workspaces/novel-bio-mechanisms-c075-claude/papers",
+        "datasets_dir": "/workspaces/novel-bio-mechanisms-c075-claude/datasets",
+        "code_dir": "/workspaces/novel-bio-mechanisms-c075-claude/code"
+      },
+      "log_file": "/workspaces/novel-bio-mechanisms-c075-claude/logs/resource_finder_claude.log",
+      "transcript_file": "/workspaces/novel-bio-mechanisms-c075-claude/logs/resource_finder_claude_transcript.jsonl",
+      "elapsed_time": 1775.9714722633362
+    },
+    "experiment_runner": {
+      "success": true,
+      "return_code": 0,
+      "elapsed_time": 4858.614096403122,
+      "log_file": "/workspaces/novel-bio-mechanisms-c075-claude/logs/execution_claude.log",
+      "transcript_file": "/workspaces/novel-bio-mechanisms-c075-claude/logs/execution_claude_transcript.jsonl"
+    }
+  },
+  "work_dir": "/workspaces/novel-bio-mechanisms-c075-claude"
+}

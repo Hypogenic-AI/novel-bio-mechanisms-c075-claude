@@ -1,0 +1,257 @@
+{
+  "n_features": 10240,
+  "n_dead": 2797,
+  "n_active": 7443,
+  "n_f1_ge_05": 165,
+  "n_f1_ge_03": 771,
+  "n_f1_lt_02": 9146,
+  "n_dark_candidate": 1382,
+  "n_structured_dark": 1207,
+  "null_entropy_p5": 4.659494149542688,
+  "null_entropy_median": 5.676985541157114,
+  "dark_entropy_median": 3.7361197471618652,
+  "top_dark_indices": [
+    687,
+    8169,
+    8753,
+    6311,
+    2963,
+    5957,
+    9846,
+    4268,
+    7304,
+    5819,
+    4528,
+    4443,
+    5599,
+    4321,
+    7786,
+    1197,
+    4995,
+    2114,
+    99,
+    3408,
+    5014,
+    8310,
+    10100,
+    4602,
+    81,
+    2243,
+    8651,
+    5701,
+    3097,
+    3359
+  ],
+  "top_dark_info": {
+    "687": {
+      "max_f1": 0.0023121386766433716,
+      "best_concept": "Region",
+      "n_active": 280,
+      "entropy": 3.720085382461548,
+      "mean_activation_nonzero": 0.6467165350914001
+    },
+    "8169": {
+      "max_f1": 0.004761904943734407,
+      "best_concept": "Domain",
+      "n_active": 309,
+      "entropy": 4.332608699798584,
+      "mean_activation_nonzero": 0.6305764317512512
+    },
+    "8753": {
+      "max_f1": 0.003546099178493023,
+      "best_concept": "Motif",
+      "n_active": 700,
+      "entropy": 4.113609790802002,
+      "mean_activation_nonzero": 0.5261789560317993
+    },
+    "6311": {
+      "max_f1": 0.01089918240904808,
+      "best_concept": "Motif",
+      "n_active": 305,
+      "entropy": 4.614076614379883,
+      "mean_activation_nonzero": 0.5961570143699646
+    },
+    "2963": {
+      "max_f1": 0.008391608484089375,
+      "best_concept": "Motif",
+      "n_active": 788,
+      "entropy": 4.8843793869018555,
+      "mean_activation_nonzero": 0.49997133016586304
+    },
+    "5957": {
+      "max_f1": 0.0,
+      "best_concept": "Active site",
+      "n_active": 262,
+      "entropy": 4.915158748626709,
+      "mean_activation_nonzero": 0.5869983434677124
+    },
+    "9846": {
+      "max_f1": 0.0,
+      "best_concept": "Active site",
+      "n_active": 333,
+      "entropy": 5.359858512878418,
+      "mean_activation_nonzero": 0.5577423572540283
+    },
+    "4268": {
+      "max_f1": 0.1326402872800827,
+      "best_concept": "Disulfide bond",
+      "n_active": 119,
+      "entropy": 4.566640853881836,
+      "mean_activation_nonzero": 0.6640381813049316
+    },
+    "7304": {
+      "max_f1": 0.06455777585506439,
+      "best_concept": "Transmembrane",
+      "n_active": 101,
+      "entropy": 4.09415864944458,
+      "mean_activation_nonzero": 0.6835324168205261
+    },
+    "5819": {
+      "max_f1": 0.004819277208298445,
+      "best_concept": "Motif",
+      "n_active": 401,
+      "entropy": 4.037929534912109,
+      "mean_activation_nonzero": 0.5264677405357361
+    },
+    "4528": {
+      "max_f1": 0.13046686351299286,
+      "best_concept": "Disulfide bond",
+      "n_active": 115,
+      "entropy": 4.896823406219482,
+      "mean_activation_nonzero": 0.6572269201278687
+    },
+    "4443": {
+      "max_f1": 0.11351051926612854,
+      "best_concept": "Disulfide bond",
+      "n_active": 100,
+      "entropy": 0.12801246345043182,
+      "mean_activation_nonzero": 0.6657471656799316
+    },
+    "5599": {
+      "max_f1": 0.10204555094242096,
+      "best_concept": "Transmembrane",
+      "n_active": 210,
+      "entropy": 4.7460618019104,
+      "mean_activation_nonzero": 0.5629527568817139
+    },
+    "4321": {
+      "max_f1": 0.11335361003875732,
+      "best_concept": "Disulfide bond",
+      "n_active": 101,
+      "entropy": 4.734917163848877,
+      "mean_activation_nonzero": 0.6499220132827759
+    },
+    "7786": {
+      "max_f1": 0.010799136012792587,
+      "best_concept": "Motif",
+      "n_active": 782,
+      "entropy": 4.670820713043213,
+      "mean_activation_nonzero": 0.4384678304195404
+    },
+    "1197": {
+      "max_f1": 0.17443250119686127,
+      "best_concept": "Domain",
+      "n_active": 149,
+      "entropy": 5.204830169677734,
+      "mean_activation_nonzero": 0.5804387331008911
+    },
+    "4995": {
+      "max_f1": 0.008733624592423439,
+      "best_concept": "Motif",
+      "n_active": 283,
+      "entropy": 4.907505035400391,
+      "mean_activation_nonzero": 0.5067383646965027
+    },
+    "2114": {
+      "max_f1": 0.14628319442272186,
+      "best_concept": "Disulfide bond",
+      "n_active": 127,
+      "entropy": 2.7360124588012695,
+      "mean_activation_nonzero": 0.588799238204956
+    },
+    "99": {
+      "max_f1": 0.013333333656191826,
+      "best_concept": "Motif",
+      "n_active": 341,
+      "entropy": 3.984616756439209,
+      "mean_activation_nonzero": 0.47852787375450134
+    },
+    "3408": {
+      "max_f1": 0.07573812454938889,
+      "best_concept": "Transmembrane",
+      "n_active": 120,
+      "entropy": 3.88568377494812,
+      "mean_activation_nonzero": 0.5786241292953491
+    },
+    "5014": {
+      "max_f1": 0.17005987465381622,
+      "best_concept": "Domain",
+      "n_active": 145,
+      "entropy": 4.110391139984131,
+      "mean_activation_nonzero": 0.5495637059211731
+    },
+    "8310": {
+      "max_f1": 0.011711125262081623,
+      "best_concept": "Motif",
+      "n_active": 1148,
+      "entropy": 3.9836807250976562,
+      "mean_activation_nonzero": 0.3864477574825287
+    },
+    "10100": {
+      "max_f1": 0.18311533331871033,
+      "best_concept": "Domain",
+      "n_active": 157,
+      "entropy": 5.915773868560791,
+      "mean_activation_nonzero": 0.532822847366333
+    },
+    "4602": {
+      "max_f1": 0.1420510709285736,
+      "best_concept": "Disulfide bond",
+      "n_active": 119,
+      "entropy": 3.291048049926758,
+      "mean_activation_nonzero": 0.5585260987281799
+    },
+    "81": {
+      "max_f1": 0.16790123283863068,
+      "best_concept": "Disulfide bond",
+      "n_active": 143,
+      "entropy": 2.0514135360717773,
+      "mean_activation_nonzero": 0.5364992618560791
+    },
+    "2243": {
+      "max_f1": 0.1895734667778015,
+      "best_concept": "Domain",
+      "n_active": 163,
+      "entropy": 4.357382774353027,
+      "mean_activation_nonzero": 0.5193732976913452
+    },
+    "8651": {
+      "max_f1": 0.18457801640033722,
+      "best_concept": "Disulfide bond",
+      "n_active": 161,
+      "entropy": 3.497209072113037,
+      "mean_activation_nonzero": 0.5156731009483337
+    },
+    "5701": {
+      "max_f1": 0.16346153616905212,
+      "best_concept": "Domain",
+      "n_active": 139,
+      "entropy": 2.792158842086792,
+      "mean_activation_nonzero": 0.5294733643531799
+    },
+    "3097": {
+      "max_f1": 0.04615384712815285,
+      "best_concept": "Domain",
+      "n_active": 590,
+      "entropy": 3.9045329093933105,
+      "mean_activation_nonzero": 0.3979431688785553
+    },
+    "3359": {
+      "max_f1": 0.016460904851555824,
+      "best_concept": "Motif",
+      "n_active": 283,
+      "entropy": 4.746504783630371,
+      "mean_activation_nonzero": 0.4442044794559479
+    }
+  }
+}

@@ -1,0 +1,1331 @@
+{
+  "extra_concepts": [
+    "Zinc finger",
+    "Topological domain",
+    "Repeat",
+    "Compositional bias",
+    "Cross-link",
+    "Coiled coil",
+    "Nucleotide binding"
+  ],
+  "extra_concept_positives": {
+    "Zinc finger": 8402,
+    "Topological domain": 61407,
+    "Repeat": 12895,
+    "Compositional bias": 18832,
+    "Cross-link": 301,
+    "Coiled coil": 6773,
+    "Nucleotide binding": 0
+  },
+  "extra_concept_domains": {
+    "Zinc finger": 307,
+    "Topological domain": 1477,
+    "Repeat": 518,
+    "Compositional bias": 1138,
+    "Cross-link": 316,
+    "Coiled coil": 105,
+    "Nucleotide binding": 0
+  },
+  "top_dark_recheck": {
+    "687": {
+      "per_concept": {
+        "Zinc finger": {
+          "precision": 1.0,
+          "recall": 0.4560260586319218,
+          "f1": 0.6263982102908278
+        },
+        "Topological domain": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Repeat": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Compositional bias": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Cross-link": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Coiled coil": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Nucleotide binding": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        }
+      },
+      "best_concept": "Zinc finger",
+      "best_f1": 0.6263982102908278,
+      "best_precision": 1.0,
+      "best_recall": 0.4560260586319218
+    },
+    "8169": {
+      "per_concept": {
+        "Zinc finger": {
+          "precision": 0.9870967741935484,
+          "recall": 0.498371335504886,
+          "f1": 0.6623376623376623
+        },
+        "Topological domain": {
+          "precision": 0.01282051282051282,
+          "recall": 0.0006770480704129993,
+          "f1": 0.0012861736334405143
+        },
+        "Repeat": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Compositional bias": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Cross-link": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Coiled coil": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Nucleotide binding": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        }
+      },
+      "best_concept": "Zinc finger",
+      "best_f1": 0.6623376623376623,
+      "best_precision": 0.9870967741935484,
+      "best_recall": 0.498371335504886
+    },
+    "8753": {
+      "per_concept": {
+        "Zinc finger": {
+          "precision": 0.9971428571428571,
+          "recall": 0.6514657980456026,
+          "f1": 0.7880638805936445
+        },
+        "Topological domain": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Repeat": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Compositional bias": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Cross-link": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Coiled coil": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Nucleotide binding": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        }
+      },
+      "best_concept": "Zinc finger",
+      "best_f1": 0.7880638805936445,
+      "best_precision": 0.9971428571428571,
+      "best_recall": 0.6514657980456026
+    },
+    "6311": {
+      "per_concept": {
+        "Zinc finger": {
+          "precision": 0.9869281045751634,
+          "recall": 0.49185667752442996,
+          "f1": 0.6565217391304348
+        },
+        "Topological domain": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Repeat": {
+          "precision": 0.006535947712418301,
+          "recall": 0.0019305019305019305,
+          "f1": 0.0029806259314456036
+        },
+        "Compositional bias": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Cross-link": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Coiled coil": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Nucleotide binding": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        }
+      },
+      "best_concept": "Zinc finger",
+      "best_f1": 0.6565217391304348,
+      "best_precision": 0.9869281045751634,
+      "best_recall": 0.49185667752442996
+    },
+    "2963": {
+      "per_concept": {
+        "Zinc finger": {
+          "precision": 0.9873096446700508,
+          "recall": 0.7231270358306189,
+          "f1": 0.8348164009067577
+        },
+        "Topological domain": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Repeat": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Compositional bias": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Cross-link": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Coiled coil": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Nucleotide binding": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        }
+      },
+      "best_concept": "Zinc finger",
+      "best_f1": 0.8348164009067577,
+      "best_precision": 0.9873096446700508,
+      "best_recall": 0.7231270358306189
+    },
+    "5957": {
+      "per_concept": {
+        "Zinc finger": {
+          "precision": 1.0,
+          "recall": 0.42671009771986973,
+          "f1": 0.5981735159817352
+        },
+        "Topological domain": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Repeat": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Compositional bias": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Cross-link": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Coiled coil": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Nucleotide binding": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        }
+      },
+      "best_concept": "Zinc finger",
+      "best_f1": 0.5981735159817352,
+      "best_precision": 1.0,
+      "best_recall": 0.42671009771986973
+    },
+    "9846": {
+      "per_concept": {
+        "Zinc finger": {
+          "precision": 1.0,
+          "recall": 0.5439739413680782,
+          "f1": 0.7046413502109705
+        },
+        "Topological domain": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Repeat": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Compositional bias": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Cross-link": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Coiled coil": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Nucleotide binding": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        }
+      },
+      "best_concept": "Zinc finger",
+      "best_f1": 0.7046413502109705,
+      "best_precision": 1.0,
+      "best_recall": 0.5439739413680782
+    },
+    "4268": {
+      "per_concept": {
+        "Zinc finger": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Topological domain": {
+          "precision": 0.95,
+          "recall": 0.03859174001354096,
+          "f1": 0.07417046193884189
+        },
+        "Repeat": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Compositional bias": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Cross-link": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Coiled coil": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Nucleotide binding": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        }
+      },
+      "best_concept": "Topological domain",
+      "best_f1": 0.07417046193884189,
+      "best_precision": 0.95,
+      "best_recall": 0.03859174001354096
+    },
+    "7304": {
+      "per_concept": {
+        "Zinc finger": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Topological domain": {
+          "precision": 0.0196078431372549,
+          "recall": 0.0006770480704129993,
+          "f1": 0.0013089005235602095
+        },
+        "Repeat": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Compositional bias": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Cross-link": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Coiled coil": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Nucleotide binding": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        }
+      },
+      "best_concept": "Topological domain",
+      "best_f1": 0.0013089005235602095,
+      "best_precision": 0.0196078431372549,
+      "best_recall": 0.0006770480704129993
+    },
+    "5819": {
+      "per_concept": {
+        "Zinc finger": {
+          "precision": 1.0,
+          "recall": 0.6547231270358306,
+          "f1": 0.7913385826771654
+        },
+        "Topological domain": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Repeat": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Compositional bias": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Cross-link": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Coiled coil": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Nucleotide binding": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        }
+      },
+      "best_concept": "Zinc finger",
+      "best_f1": 0.7913385826771654,
+      "best_precision": 1.0,
+      "best_recall": 0.6547231270358306
+    },
+    "4528": {
+      "per_concept": {
+        "Zinc finger": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Topological domain": {
+          "precision": 0.9482758620689655,
+          "recall": 0.037237643872714964,
+          "f1": 0.07166123778501628
+        },
+        "Repeat": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Compositional bias": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Cross-link": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Coiled coil": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Nucleotide binding": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        }
+      },
+      "best_concept": "Topological domain",
+      "best_f1": 0.07166123778501628,
+      "best_precision": 0.9482758620689655,
+      "best_recall": 0.037237643872714964
+    },
+    "4443": {
+      "per_concept": {
+        "Zinc finger": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Topological domain": {
+          "precision": 0.96,
+          "recall": 0.03249830737982397,
+          "f1": 0.06286836935166994
+        },
+        "Repeat": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Compositional bias": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Cross-link": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Coiled coil": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Nucleotide binding": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        }
+      },
+      "best_concept": "Topological domain",
+      "best_f1": 0.06286836935166994,
+      "best_precision": 0.96,
+      "best_recall": 0.03249830737982397
+    },
+    "5599": {
+      "per_concept": {
+        "Zinc finger": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Topological domain": {
+          "precision": 0.01904761904761905,
+          "recall": 0.0013540961408259986,
+          "f1": 0.0025284450063211123
+        },
+        "Repeat": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Compositional bias": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Cross-link": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Coiled coil": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Nucleotide binding": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        }
+      },
+      "best_concept": "Topological domain",
+      "best_f1": 0.0025284450063211123,
+      "best_precision": 0.01904761904761905,
+      "best_recall": 0.0013540961408259986
+    },
+    "4321": {
+      "per_concept": {
+        "Zinc finger": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Topological domain": {
+          "precision": 0.9607843137254902,
+          "recall": 0.03317535545023697,
+          "f1": 0.06413612565445027
+        },
+        "Repeat": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Compositional bias": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Cross-link": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Coiled coil": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Nucleotide binding": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        }
+      },
+      "best_concept": "Topological domain",
+      "best_f1": 0.06413612565445027,
+      "best_precision": 0.9607843137254902,
+      "best_recall": 0.03317535545023697
+    },
+    "7786": {
+      "per_concept": {
+        "Zinc finger": {
+          "precision": 0.989769820971867,
+          "recall": 0.6449511400651465,
+          "f1": 0.78099344126955
+        },
+        "Topological domain": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Repeat": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Compositional bias": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Cross-link": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Coiled coil": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Nucleotide binding": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        }
+      },
+      "best_concept": "Zinc finger",
+      "best_f1": 0.78099344126955,
+      "best_precision": 0.989769820971867,
+      "best_recall": 0.6449511400651465
+    },
+    "1197": {
+      "per_concept": {
+        "Zinc finger": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Topological domain": {
+          "precision": 0.30666666666666664,
+          "recall": 0.010832769126607989,
+          "f1": 0.02092633135253476
+        },
+        "Repeat": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Compositional bias": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Cross-link": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Coiled coil": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Nucleotide binding": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        }
+      },
+      "best_concept": "Topological domain",
+      "best_f1": 0.02092633135253476,
+      "best_precision": 0.30666666666666664,
+      "best_recall": 0.010832769126607989
+    },
+    "4995": {
+      "per_concept": {
+        "Zinc finger": {
+          "precision": 0.9788732394366197,
+          "recall": 0.4527687296416938,
+          "f1": 0.6191536748329621
+        },
+        "Topological domain": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Repeat": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Compositional bias": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Cross-link": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Coiled coil": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Nucleotide binding": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        }
+      },
+      "best_concept": "Zinc finger",
+      "best_f1": 0.6191536748329621,
+      "best_precision": 0.9788732394366197,
+      "best_recall": 0.4527687296416938
+    },
+    "2114": {
+      "per_concept": {
+        "Zinc finger": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Topological domain": {
+          "precision": 0.96875,
+          "recall": 0.04197698036560596,
+          "f1": 0.08046722907203113
+        },
+        "Repeat": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Compositional bias": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Cross-link": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Coiled coil": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Nucleotide binding": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        }
+      },
+      "best_concept": "Topological domain",
+      "best_f1": 0.08046722907203113,
+      "best_precision": 0.96875,
+      "best_recall": 0.04197698036560596
+    },
+    "99": {
+      "per_concept": {
+        "Zinc finger": {
+          "precision": 0.9883040935672515,
+          "recall": 0.5504885993485342,
+          "f1": 0.7071129707112971
+        },
+        "Topological domain": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Repeat": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Compositional bias": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Cross-link": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Coiled coil": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Nucleotide binding": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        }
+      },
+      "best_concept": "Zinc finger",
+      "best_f1": 0.7071129707112971,
+      "best_precision": 0.9883040935672515,
+      "best_recall": 0.5504885993485342
+    },
+    "3408": {
+      "per_concept": {
+        "Zinc finger": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Topological domain": {
+          "precision": 0.016666666666666666,
+          "recall": 0.0006770480704129993,
+          "f1": 0.0013012361743656475
+        },
+        "Repeat": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Compositional bias": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Cross-link": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Coiled coil": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Nucleotide binding": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        }
+      },
+      "best_concept": "Topological domain",
+      "best_f1": 0.0013012361743656475,
+      "best_precision": 0.016666666666666666,
+      "best_recall": 0.0006770480704129993
+    },
+    "5014": {
+      "per_concept": {
+        "Zinc finger": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Topological domain": {
+          "precision": 0.2876712328767123,
+          "recall": 0.008801624915368992,
+          "f1": 0.017080648188700493
+        },
+        "Repeat": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Compositional bias": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Cross-link": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Coiled coil": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Nucleotide binding": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        }
+      },
+      "best_concept": "Topological domain",
+      "best_f1": 0.017080648188700493,
+      "best_precision": 0.2876712328767123,
+      "best_recall": 0.008801624915368992
+    },
+    "8310": {
+      "per_concept": {
+        "Zinc finger": {
+          "precision": 0.9094076655052264,
+          "recall": 0.7654723127035831,
+          "f1": 0.8312552516737592
+        },
+        "Topological domain": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Repeat": {
+          "precision": 0.003484320557491289,
+          "recall": 0.0019305019305019305,
+          "f1": 0.0024844720496894407
+        },
+        "Compositional bias": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Cross-link": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Coiled coil": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Nucleotide binding": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        }
+      },
+      "best_concept": "Zinc finger",
+      "best_f1": 0.8312552516737592,
+      "best_precision": 0.9094076655052264,
+      "best_recall": 0.7654723127035831
+    },
+    "10100": {
+      "per_concept": {
+        "Zinc finger": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Topological domain": {
+          "precision": 0.3037974683544304,
+          "recall": 0.009478672985781991,
+          "f1": 0.01838376101110686
+        },
+        "Repeat": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Compositional bias": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Cross-link": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Coiled coil": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Nucleotide binding": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        }
+      },
+      "best_concept": "Topological domain",
+      "best_f1": 0.01838376101110686,
+      "best_precision": 0.3037974683544304,
+      "best_recall": 0.009478672985781991
+    },
+    "4602": {
+      "per_concept": {
+        "Zinc finger": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Topological domain": {
+          "precision": 0.95,
+          "recall": 0.03859174001354096,
+          "f1": 0.07417046193884189
+        },
+        "Repeat": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Compositional bias": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Cross-link": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Coiled coil": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Nucleotide binding": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        }
+      },
+      "best_concept": "Topological domain",
+      "best_f1": 0.07417046193884189,
+      "best_precision": 0.95,
+      "best_recall": 0.03859174001354096
+    },
+    "81": {
+      "per_concept": {
+        "Zinc finger": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Topological domain": {
+          "precision": 0.25,
+          "recall": 0.008801624915368992,
+          "f1": 0.017004578155657292
+        },
+        "Repeat": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Compositional bias": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Cross-link": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Coiled coil": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Nucleotide binding": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        }
+      },
+      "best_concept": "Topological domain",
+      "best_f1": 0.017004578155657292,
+      "best_precision": 0.25,
+      "best_recall": 0.008801624915368992
+    },
+    "2243": {
+      "per_concept": {
+        "Zinc finger": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Topological domain": {
+          "precision": 0.3048780487804878,
+          "recall": 0.010155721056194989,
+          "f1": 0.019656663608963437
+        },
+        "Repeat": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Compositional bias": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Cross-link": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Coiled coil": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Nucleotide binding": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        }
+      },
+      "best_concept": "Topological domain",
+      "best_f1": 0.019656663608963437,
+      "best_precision": 0.3048780487804878,
+      "best_recall": 0.010155721056194989
+    },
+    "8651": {
+      "per_concept": {
+        "Zinc finger": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Topological domain": {
+          "precision": 0.9629629629629629,
+          "recall": 0.052809749492213946,
+          "f1": 0.10012836970474968
+        },
+        "Repeat": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Compositional bias": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Cross-link": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Coiled coil": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Nucleotide binding": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        }
+      },
+      "best_concept": "Topological domain",
+      "best_f1": 0.10012836970474968,
+      "best_precision": 0.9629629629629629,
+      "best_recall": 0.052809749492213946
+    },
+    "5701": {
+      "per_concept": {
+        "Zinc finger": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Topological domain": {
+          "precision": 0.22857142857142856,
+          "recall": 0.007447528774542992,
+          "f1": 0.014425047127284648
+        },
+        "Repeat": {
+          "precision": 0.014285714285714285,
+          "recall": 0.0019305019305019305,
+          "f1": 0.003401360544217687
+        },
+        "Compositional bias": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Cross-link": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Coiled coil": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Nucleotide binding": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        }
+      },
+      "best_concept": "Topological domain",
+      "best_f1": 0.014425047127284648,
+      "best_precision": 0.22857142857142856,
+      "best_recall": 0.007447528774542992
+    },
+    "3097": {
+      "per_concept": {
+        "Zinc finger": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Topological domain": {
+          "precision": 0.04745762711864407,
+          "recall": 0.0006770480704129993,
+          "f1": 0.0013350498259667191
+        },
+        "Repeat": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Compositional bias": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Cross-link": {
+          "precision": 0.003389830508474576,
+          "recall": 0.0031645569620253164,
+          "f1": 0.003273322422258592
+        },
+        "Coiled coil": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Nucleotide binding": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        }
+      },
+      "best_concept": "Cross-link",
+      "best_f1": 0.003273322422258592,
+      "best_precision": 0.003389830508474576,
+      "best_recall": 0.0031645569620253164
+    },
+    "3359": {
+      "per_concept": {
+        "Zinc finger": {
+          "precision": 1.0,
+          "recall": 0.46254071661237783,
+          "f1": 0.6325167037861915
+        },
+        "Topological domain": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Repeat": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Compositional bias": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Cross-link": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Coiled coil": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "Nucleotide binding": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        }
+      },
+      "best_concept": "Zinc finger",
+      "best_f1": 0.6325167037861915,
+      "best_precision": 1.0,
+      "best_recall": 0.46254071661237783
+    }
+  },
+  "broader_recovery": {
+    "recovered_at_f1_0.2": 105,
+    "frac_at_f1_0.2": 0.08699254349627175,
+    "recovered_at_f1_0.3": 52,
+    "frac_at_f1_0.3": 0.04308202154101077,
+    "recovered_at_f1_0.4": 40,
+    "frac_at_f1_0.4": 0.033140016570008285,
+    "recovered_at_f1_0.5": 38,
+    "frac_at_f1_0.5": 0.03148301574150787
+  }
+}

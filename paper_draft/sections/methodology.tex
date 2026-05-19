@@ -1,0 +1,53 @@
+\section{Methodology}
+\label{sec:methodology}
+
+\para{Overview.} Our pipeline applies five independent tests to the same set of \sae features so that statistical structure, causal influence, downstream-task correlation, and LLM-grounded annotation can be compared on an equal footing. \Figref{fig:f1} summarizes the headline reproduction of \interplm; subsequent figures (\figref{fig:dark}, \figref{fig:ablation}, \figref{fig:gym}) report the three audit axes.
+
+\subsection{Data}
+
+\para{Protein corpus.} We use the human \swissprot proteome (20{,}442 reviewed entries) and sample a random subset of $N = 1{,}500$ sequences (seed 42) restricted to length 50--500 residues and the 20 standard amino acids. Total residues: 422{,}146. \swissprot annotations are fetched from the \texttt{UniProtKB} REST API \citep{bateman2023uniprot} with a 12-thread pool and exponential backoff; we retrieve 1{,}500/1{,}500 entries. We binarize 16 feature types per residue: active site, binding site, disulfide bond, motif, domain, region, helix, beta strand, turn, transmembrane, signal peptide, modified residue, lipidation, glycosylation, and site. We exclude the \texttt{Chain} feature because it covers 97\% of residues and is trivially matched by any broad feature.
+
+\para{Variant-effect data.} We use three \dms assays from \proteingym \citep{notin2023proteingym}: \texttt{BLAT\_ECOLX} (286 aa, 4{,}996 mutants), \texttt{GFP\_AEQVI} (238 aa, 51{,}714 mutants), and \texttt{SPG1\_STRSG} (448 aa, 536{,}962 mutants). Per-residue fitness sensitivity is defined as the mean of $|\dms\text{\_score}|$ over single-point mutants at that position.
+
+\subsection{Model and SAE}
+
+We use \esm (\texttt{facebook/esm2\_t6\_8M\_UR50D}) loaded via the HuggingFace \texttt{transformers} library \citep{wolf2020transformers}, with rotary position embeddings, hidden dim 320, and 6 transformer layers. The \sae is the pretrained \texttt{Elana/InterPLM-esm2-8m} ReLU autoencoder for layer 4, with 10{,}240 latent features (expansion factor $\sim 32\times$) and unit-norm decoder rows. All inference uses mixed precision on a single NVIDIA RTX A6000 (48~GB).
+
+\subsection{Audit axis 1: Feature--concept F1}
+\label{ssec:f1}
+
+Following \citet{simon2024interplm}, for each (feature, concept) pair we sweep activation thresholds at the 50, 75, 90, 95, and 99th percentiles of nonzero activations (for the raw-neuron baseline we use 80/90/95/99th percentiles of clipped-positive values) and report the best F1. Precision is per-residue: the fraction of above-threshold residues that are positive for the concept. Recall is \emph{domain-adjusted}: the fraction of distinct annotated domain instances (\eg ``binding site at position 87 of protein X'') that have at least one above-threshold residue. The same F1 is computed for raw \esm-8M layer-4 neurons (320 units) as a baseline.
+
+\subsection{Audit axis 2: Dark features and entropy null}
+\label{ssec:dark}
+
+A feature is \emph{dark} if its maximum F1 across the 15 concepts (or 22 after adding the extras in \secref{sec:results}) is $< 0.2$ \emph{and} it fires at $\geq 100$ residues across the proteome, which drops dead and near-dead features. A dark feature is \emph{structured} if the entropy $H$ of its protein-level activation distribution falls below the 5th percentile of a null built by drawing $n_{\text{nnz}}$ residue positions uniformly across all 422{,}146 residues. The null gives a per-feature $p$-value; the 5\% threshold gives a Bernoulli rate matched to the F1 sweep.
+
+\subsection{Audit axis 3: Forward-hook causal ablation}
+\label{ssec:ablation}
+
+For each top dark feature $f$ and each of up to 30 proteins where $f$ fires strongly:
+\begin{enumerate}[leftmargin=*,itemsep=0pt,topsep=0pt]
+    \item Run \esm and record the original \mlm logits at the maximally activating residue $r_{\text{act}}$.
+    \item Register a forward hook on the output of encoder layer 4---the same point at which the \sae is trained---that subtracts $a_{f,r} \cdot \mW_{\text{dec}}[:, f]$ from the hidden state at a chosen residue $r$, where $a_{f,r}$ is the recorded feature activation.
+    \item Re-run \esm with the hook firing at $r_{\text{act}}$ and record the perturbed logits.
+    \item Compute $\KL(\softmax(z_{\text{orig}}) \,\Vert\, \softmax(z_{\text{abl}}))$ at $r_{\text{act}}$.
+    \item Repeat steps 2--4 at 10 random control residues in the same protein where $f$ does \emph{not} activate, using the same perturbation magnitude.
+\end{enumerate}
+We perform a Wilcoxon signed-rank test (one-sided, alternative ``greater'') on the paired $(\KL_{\text{act}}, \overline{\KL_{\text{ctl}}})$ across proteins, and correct $p$-values across the 30 features with Benjamini--Hochberg FDR \citep{benjamini1995fdr}.
+
+\subsection{Audit axis 4: \proteingym variant-effect correlation}
+\label{ssec:gym}
+
+For each top dark feature and each \dms assay, we run \esm and the \sae on the wild-type sequence and compute the Spearman correlation $\rho$ between the per-residue feature activation and the per-residue mean $|\dms\text{\_score}|$. A ``bright'' pool (features with max-F1 $\geq 0.5$) and a random pool of 30 features serve as comparison groups. Because \dms assays cover only $\sim$250--450 residues, we require $\geq 5$ activating residues on a sequence to enter the test.
+
+\subsection{Audit axis 5: \gptfive-grounded annotation}
+\label{ssec:llm}
+
+For each of the top 10 dark features we build 15 sequence windows of length 21 ($\pm 10$ residues around the maximally activating position) from the top-15 activating proteins. The windows, with no other context, are sent to \gptfive in a single prompt with a structural-biology persona and an explicit ``no clear pattern'' option as an anti-hallucination guardrail. We save the response verbatim. The original plan was to use Claude-3.5-Sonnet; only \texttt{OPENAI\_API\_KEY} was available, so \gptfive is the actual model.
+
+After receiving the LLM hypotheses we re-run the F1 sweep of \secref{ssec:f1} with seven added concepts (Zinc finger, Topological domain, Repeat, Compositional bias, Cross-link, Coiled coil, Nucleotide binding) and report the best F1 for each top feature against this enlarged list.
+
+\subsection{Reproducibility}
+
+The full pipeline is deterministic given seed 42 and runs in approximately 25 minutes end-to-end on one A6000 (16 min for steps 1--7, 9 min for LLM annotation at $\sim$55 s per feature). Output artifacts include sparse \sae activations, per-feature/concept F1, dark feature catalog, ablation results, \proteingym correlations, and verbatim LLM responses.
