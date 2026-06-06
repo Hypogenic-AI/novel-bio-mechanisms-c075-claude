@@ -1,4 +1,5 @@
 """Global experiment configuration."""
+import os
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -9,9 +10,9 @@ PROTEINGYM_DIR = ROOT / "datasets" / "proteingym" / "ProteinGym_substitutions"
 PROTEINGYM_REF = ROOT / "datasets" / "proteingym" / "DMS_substitutions.csv"
 
 # Results
-RESULTS = ROOT / "results"
-FIGURES = ROOT / "figures"
-LOGS = ROOT / "logs"
+RESULTS = Path(os.environ.get("RESULTS_DIR", ROOT / "results"))
+FIGURES = Path(os.environ.get("FIGURES_DIR", ROOT / "figures"))
+LOGS = Path(os.environ.get("LOGS_DIR", ROOT / "logs"))
 for p in (RESULTS, FIGURES, LOGS):
     p.mkdir(exist_ok=True, parents=True)
 
@@ -46,5 +47,9 @@ N_ABLATION_PROTEINS = 30
 N_CONTROL_RESIDUES_PER_PROT = 10
 
 # Device
-import torch
-DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+try:
+    import torch
+
+    DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+except ModuleNotFoundError:
+    DEVICE = "cpu"
