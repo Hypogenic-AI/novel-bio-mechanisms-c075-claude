@@ -28,6 +28,7 @@ from tqdm import tqdm
 from transformers import AutoTokenizer, EsmModel
 
 from src import config
+from src.foundation_model_registry import get_model_spec
 
 
 ASSAYS = [
@@ -61,27 +62,54 @@ def per_residue_sensitivity(df: pd.DataFrame, seq_len: int) -> np.ndarray:
     return sensitivity, valid
 
 
-def get_sae_activations(seq: str, model: EsmModel, tokenizer, sae, device: str) -> np.ndarray:
-    enc = tokenizer([seq], return_tensors="pt", padding=True, truncation=True, max_length=1024)
+def get_sae_activations(
+    seq: str,
+    model: EsmModel,
+    tokenizer,
+    sae,
+    device: str,
+    layer: int,
+    max_length: int,
+    special_token_policy: str,
+) -> np.ndarray:
+    enc = tokenizer([seq], return_tensors="pt", padding=True, truncation=True, max_length=max_length)
     enc = {k: v.to(device) for k, v in enc.items()}
     with torch.no_grad():
         out = model(**enc, output_hidden_states=True)
-        hidden4 = out.hidden_states[config.ESM_LAYER]
-        # Strip CLS and EOS
+        hidden = out.hidden_states[layer]
         attn = enc["attention_mask"].bool()[0]
-        h = hidden4[0][attn][1:-1]
+        h = hidden[0][attn]
+        if special_token_policy == "esm":
+            h = h[1:-1]
+        else:
+            raise ValueError(
+                "ProteinGym correlation currently supports ESM-style token positions only; "
+                f"got special_token_policy={special_token_policy!r}"
+            )
         feats = sae.encode(h).cpu().float().numpy()
     return feats  # (L, dict_size)
 
 
 def main():
+    with open(config.RESULTS / "index.json") as f:
+        index = json.load(f)
+
+    foundation_model_key = index.get("foundation_model_key", "esm2_8m")
+    model_id = index.get("model_id", index.get("esm_model", config.ESM_MODEL))
+    model_layer = int(index.get("model_layer", index.get("esm_layer", config.ESM_LAYER)))
+    special_token_policy = index.get("special_token_policy", "esm")
+    model_spec = get_model_spec(foundation_model_key)
+    if not model_spec.has_public_sae or model_spec.sae_loader_key is None:
+        raise ValueError(f"{foundation_model_key} has no registered InterPLM SAE for ProteinGym")
+
     print(f"[{time.strftime('%H:%M:%S')}] Loading model + SAE...")
-    tokenizer = AutoTokenizer.from_pretrained(config.ESM_MODEL)
-    model = EsmModel.from_pretrained(config.ESM_MODEL, add_pooling_layer=False)
+    print(f"  model={foundation_model_key} ({model_id}), layer={model_layer}")
+    tokenizer = AutoTokenizer.from_pretrained(model_id)
+    model = EsmModel.from_pretrained(model_id, add_pooling_layer=False)
     model.eval().to(config.DEVICE)
 
     from interplm.sae.inference import load_sae_from_hf
-    sae = load_sae_from_hf(plm_model="esm2-8m", plm_layer=config.ESM_LAYER)
+    sae = load_sae_from_hf(plm_model=model_spec.sae_loader_key, plm_layer=model_layer)
     sae.eval().to(config.DEVICE)
 
     print(f"[{time.strftime('%H:%M:%S')}] Loading ProteinGym reference and dark features...")
@@ -99,7 +127,7 @@ def main():
     bright_idx = np.where(max_f1 >= 0.5)[0]
     bright_sample = rng.choice(bright_idx, size=min(30, len(bright_idx)), replace=False)
     # And a random set of features (any)
-    random_sample = rng.choice(10240, size=30, replace=False)
+    random_sample = rng.choice(F1.shape[0], size=min(30, F1.shape[0]), replace=False)
 
     all_results = []
 
@@ -117,7 +145,16 @@ def main():
               f"95%={np.percentile(sensitivity[valid], 95):.3f}")
 
         # ESM-2 has max length 1024, GFP=238 BLAT=286 SPG1=448 OK
-        feats = get_sae_activations(target_seq, model, tokenizer, sae, config.DEVICE)
+        feats = get_sae_activations(
+            target_seq,
+            model,
+            tokenizer,
+            sae,
+            config.DEVICE,
+            model_layer,
+            model_spec.max_length,
+            special_token_policy,
+        )
         if feats.shape[0] != L:
             print(f"  WARNING shape mismatch {feats.shape[0]} vs {L}")
             min_len = min(feats.shape[0], L)

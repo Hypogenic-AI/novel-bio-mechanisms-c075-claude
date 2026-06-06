@@ -29,6 +29,7 @@ from tqdm import tqdm
 from transformers import AutoTokenizer, EsmForMaskedLM
 
 from src import config
+from src.foundation_model_registry import get_model_spec
 
 
 class AblationHook:
@@ -58,21 +59,37 @@ class AblationHook:
 
 
 def main():
+    with open(config.RESULTS / "index.json") as f:
+        index = json.load(f)
+
+    foundation_model_key = index.get("foundation_model_key", "esm2_8m")
+    model_id = index.get("model_id", index.get("esm_model", config.ESM_MODEL))
+    model_layer = int(index.get("model_layer", index.get("esm_layer", config.ESM_LAYER)))
+    special_token_policy = index.get("special_token_policy", "esm")
+    if special_token_policy != "esm":
+        raise ValueError(
+            "Ablation currently supports ESM-style token positions only; "
+            f"got special_token_policy={special_token_policy!r}"
+        )
+
+    model_spec = get_model_spec(foundation_model_key)
+    if not model_spec.has_public_sae or model_spec.sae_loader_key is None:
+        raise ValueError(f"{foundation_model_key} has no registered InterPLM SAE for ablation")
+
     print(f"[{time.strftime('%H:%M:%S')}] Loading model + SAE + data...")
-    tokenizer = AutoTokenizer.from_pretrained(config.ESM_MODEL)
-    model = EsmForMaskedLM.from_pretrained(config.ESM_MODEL)
+    print(f"  model={foundation_model_key} ({model_id}), layer={model_layer}")
+    tokenizer = AutoTokenizer.from_pretrained(model_id)
+    model = EsmForMaskedLM.from_pretrained(model_id)
     model.eval()
     model = model.to(config.DEVICE)
 
     from interplm.sae.inference import load_sae_from_hf
-    sae = load_sae_from_hf(plm_model="esm2-8m", plm_layer=config.ESM_LAYER)
+    sae = load_sae_from_hf(plm_model=model_spec.sae_loader_key, plm_layer=model_layer)
     sae.eval()
     sae = sae.to(config.DEVICE)
 
     feats = sparse.load_npz(config.RESULTS / "sae_activations.npz")
     feats_csc = feats.tocsc()
-    with open(config.RESULTS / "index.json") as f:
-        index = json.load(f)
     proteins = index["proteins"]
     offsets = {k: tuple(v) for k, v in index["offsets"].items()}
 
@@ -89,14 +106,16 @@ def main():
 
     # Decoder weight (D, F)
     W_dec = sae.decoder.weight.detach().to(config.DEVICE)
-    assert W_dec.shape == (config.HIDDEN_DIM, config.SAE_DICT_SIZE), W_dec.shape
+    expected_hidden_dim = int(index.get("hidden_dim", config.HIDDEN_DIM))
+    expected_sae_dim = feats.shape[1]
+    assert W_dec.shape == (expected_hidden_dim, expected_sae_dim), W_dec.shape
 
-    # Register hook on layer ESM_LAYER-1 (zero-indexed)
+    # Register hook on layer model_layer-1 (zero-indexed)
     # transformer's encoder.layer[k] output = hidden_states[k+1].
-    # We want to intercept the state AT layer ESM_LAYER, so we hook
-    # encoder.layer[ESM_LAYER-1]'s output.
+    # We want to intercept the state AT model_layer, so we hook
+    # encoder.layer[model_layer-1]'s output.
     hook = AblationHook()
-    target_layer = model.esm.encoder.layer[config.ESM_LAYER - 1]
+    target_layer = model.esm.encoder.layer[model_layer - 1]
     handle = target_layer.register_forward_hook(hook)
 
     rng = np.random.default_rng(config.SEED)

@@ -54,6 +54,38 @@ python -m src.llm_annotation              # GPT-5 hypotheses (uses $OPENAI_API_K
 python -m src.make_figures                # all figures into figures/
 ```
 
+### Exploring other foundation models
+
+The most controlled roadmap extension is to compare the current ESM-2-8M
+baseline against ESM-2-650M before jumping to chemistry or physics models. That
+keeps the protein labels, InterPLM SAE family, and ablation protocol comparable
+while testing whether the negative causal result is specific to the small PLM.
+
+```bash
+# Rank candidate models and inspect their evaluation schemas.
+python -m src.foundation_model_registry --include-baseline
+
+# Smoke-test the proposed ESM-2-650M comparison without downloading weights.
+python -m src.extract_foundation_embeddings \
+  --model-key esm2_650m \
+  --layer 33 \
+  --n-proteins 25 \
+  --dry-run
+
+# Run a small residue-embedding + InterPLM-SAE extraction.
+python -m src.extract_foundation_embeddings \
+  --model-key esm2_650m \
+  --layer 33 \
+  --n-proteins 25 \
+  --batch-size 1 \
+  --with-interplm-sae \
+  --output-dir results/foundation_models/esm2_650m_layer33_smoke
+```
+
+See [docs/foundation_model_comparison.md](docs/foundation_model_comparison.md)
+for the candidate matrix, success criteria, and why chemistry/physics models
+need a different concept schema before their results are directly comparable.
+
 ## File structure
 
 ```
@@ -66,6 +98,8 @@ python -m src.make_figures                # all figures into figures/
 │   ├── config.py              # global config (paths, seeds, model name)
 │   ├── data.py                # FASTA loader and subset sampler
 │   ├── extract_activations.py # ESM-2 forward + SAE encode → results/sae_activations.npz
+│   ├── foundation_model_registry.py # candidate model schemas and ranking
+│   ├── extract_foundation_embeddings.py # generic residue embedding extraction
 │   ├── fetch_annotations.py   # UniProt REST → results/annotations.npz
 │   ├── compute_f1.py          # feature × concept F1 with threshold sweep
 │   ├── dark_features.py       # entropy null + structured-dark catalog
