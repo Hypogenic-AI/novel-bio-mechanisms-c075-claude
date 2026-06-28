@@ -33,7 +33,7 @@ def load_activations(results_dir: Path) -> np.ndarray:
     Already computed by src/extract_activations.py.
     """
     data = np.load(results_dir / "sae_activations.npz")
-    return data["activations"]  # sparse: most values are zero
+    return data["activations"]
 
 
 def compute_kl_all_residues(results_dir: Path) -> np.ndarray:
@@ -62,14 +62,15 @@ def select_causal_features(
     cv: int = 5,
 ) -> np.ndarray:
     """
-    Use Lasso regression to identify SAE features with independent causal contribution.
+    Use Lasso regression to identify SAE features with independent causal
+    contribution.
 
     Fits:
         kl_scores ~ activations @ beta  subject to L1 penalty on beta
 
-    Lasso zeros out collinear features, retaining one representative per redundant
-    cluster. Features with nonzero beta are those whose activation pattern predicts
-    KL divergence independently of all other features.
+    Lasso zeros out collinear features, retaining one representative per
+    redundant cluster. Features with nonzero beta are those whose activation
+    pattern predicts KL divergence independently of all other features.
 
     Args:
         activations: shape (n_residues, n_features)
@@ -103,13 +104,14 @@ def co_ablate_features(
     Ablate all selected features simultaneously at a single residue position.
 
     Unlike single-feature ablation, this removes the combined decoder contribution
-    of all collinear-redundant features at once, preventing compensation.
+    of all Lasso-selected features at once, preventing compensation.
 
     Args:
         model:            ESM-2 model (transformers AutoModel)
         sae:              InterPLM SAE (loaded from HuggingFace)
         protein_sequence: amino acid string
-        feature_indices:  indices of features to co-ablate (from select_causal_features)
+        feature_indices:  indices of features to co-ablate (from
+                          select_causal_features)
         target_residue:   residue position to ablate at
 
     Returns:
@@ -118,13 +120,14 @@ def co_ablate_features(
     # TODO: implement co-ablation forward hook
     # Suggested approach:
     #   1. Compute combined perturbation vector:
-    #      perturbation = sum over j in feature_indices of (activation_j * W_dec[:, j])
+    #      perturbation = sum over j in feature_indices of
+    #                     (activation_j * W_dec[:, j])
     #   2. Register hook on ESM-2 layer 4 output that subtracts perturbation
     #      at target_residue token position
     #   3. Run forward pass, collect logits at target_residue
     #   4. Compute and return KL divergence vs original logits
     #
-    # Reference: src/ablation.py lines ~45-80 for single-feature hook implementation
+    # Reference: src/ablation.py for single-feature hook implementation
     raise NotImplementedError
 
 

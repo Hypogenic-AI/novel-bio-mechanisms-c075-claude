@@ -1,38 +1,36 @@
-# Analysis: Critique of Negative Results and Proposed Next Step
-
-## Summary
-This project tests whether ESM-2-8M encodes undiscovered biological mechanisms 
-detectable via sparse autoencoders (SAEs). Using InterPLM's pretrained SAE, 1,500 
-human Swiss-Prot proteins were evaluated across three axes: statistical structure, 
-causal ablation, and LLM-grounded annotation.
+# Analysis: Reflection on Negative Results and Proposed Next Step
 
 ## What I Learned
-Dark features — SAE features with no Swiss-Prot concept alignment — are not random 
-noise (H1 supported). However, single-feature causal ablation failed for all 30 
-features tested (H2 not supported), and ProteinGym correlation was inconclusive due 
-to insufficient statistical power (H3). Strikingly, GPT-5 identified known biological 
-sub-motifs — TGEKP zinc-finger linkers and GPCR DRY/NPxxY motifs — in 10/10 top dark 
-features (H4 strongly supported). The key insight is that dark features encode known 
-biology at finer granularity than Swiss-Prot annotates, making SAEs annotation-
-refinement tools rather than novel discovery engines in this small-model regime.
 
-## Are the Negative Results Convincing?
-The H2 failure is real but methodologically confounded. Two issues undermine the 
-ablation design. First, ESM-2-8M is heavily superposed: with only 320 hidden 
-dimensions encoding 10,240 SAE features, collinear features redundantly carry 
-overlapping information. Removing one feature leaves its neighbors to compensate, 
-making any individual feature appear causally inert regardless of its true importance. 
-Second, single-feature ablation is therefore the wrong causal test — it 
-systematically underestimates causal role whenever features share decoder directions.
+What struck me first was scale: what the model learns in minutes is so much 
+more than what humans learned in decades. The 80% dark feature rate is shocking 
+— but the three-axis investigation reframes it methodically, confirming the 
+features are real (H1), testing whether they drive predictions (H2 not 
+supported), and asking whether they can be named (H4 strongly supported).
+
+The tension between H2 and H4 is the most interesting result. The same features 
+that fail causal ablation are confidently identified as real biological sub-motifs. 
+This suggests a third interpretation beyond what the paper offers: the model may 
+learn whatever it's given as deeply as possible, independently of what its 
+prediction task actually needs.
+
+The annotation-refinement conclusion is still meaningful. There are finer logics 
+behind the logics we've already uncovered — not proving current explanations 
+wrong, just incomplete. The way relativity doesn't disprove Newton but explains 
+the errors that accumulate at edge cases.
 
 ## Proposed Next Step
-Replace single-feature ablation with Lasso regression over the full residue 
-population. Concretely: use per-residue SAE activations (shape: n_residues × 10,240) 
-as input features and per-residue KL divergence under perturbation as the target. 
-Lasso's L1 penalty drives coefficients of collinear features to exactly zero, 
-selecting one representative from each redundant cluster and assigning it the full 
-independent causal credit. Features with nonzero Lasso coefficients are the ones 
-whose causal contribution is not recoverable from their neighbors — the true causal 
-set. These should then be co-ablated simultaneously to give the causal test genuine 
-sensitivity. This approach replaces a geometric heuristic with a statistically 
-grounded selection procedure that directly targets the collinearity problem.
+
+The H2 failure is real but not conclusive — single-feature ablation is a 
+potentially flawed instrument in heavily superposed models. Collinear features 
+may compensate for the removed one, though this remains a hypothesis.
+
+I propose replacing it with Lasso regression. Unlike co-ablation clustering — 
+which assumes geometrically similar decoder vectors contribute similarly — Lasso 
+does not take this as granted. It fits a regression predicting KL divergence 
+from all 10,240 feature activations simultaneously, letting the data determine 
+actual redundancy. Features with nonzero coefficients have genuinely independent 
+causal signal. These get co-ablated together.
+
+A positive result is not guaranteed. But it would be more credible. A skeleton 
+implementation is included in `src/cluster_ablation.py`.
