@@ -19,7 +19,7 @@ behind the logics we've already uncovered — not proving current explanations
 wrong, just incomplete. The way relativity doesn't disprove Newton but explains 
 the errors that accumulate at edge cases.
 
-## Proposed Next Step
+## Why the Negative Results Are Not Conclusive, and What to Do Next
 
 The H2 failure is real but not conclusive — single-feature ablation is a 
 potentially flawed instrument in heavily superposed models. Collinear features 
