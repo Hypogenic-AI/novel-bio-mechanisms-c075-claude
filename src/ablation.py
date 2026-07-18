@@ -64,10 +64,8 @@ def main():
     model.eval()
     model = model.to(config.DEVICE)
 
-    from interplm.sae.inference import load_sae_from_hf
-    sae = load_sae_from_hf(plm_model="esm2-8m", plm_layer=config.ESM_LAYER)
-    sae.eval()
-    sae = sae.to(config.DEVICE)
+    from src.sae_loader import load_interplm_sae
+    sae = load_interplm_sae(device=config.DEVICE)
 
     feats = sparse.load_npz(config.RESULTS / "sae_activations.npz")
     feats_csc = feats.tocsc()

@@ -26,6 +26,7 @@ dependencies = [
     "transformers>=5.8.1",
     "umap-learn>=0.5.12",
     "wandb>=0.27.0",
+    "modal>=1.0.0",
 ]
 
 [tool.uv]

@@ -185,8 +185,13 @@ def figure5_concept_coverage():
     w = 0.4
     ax.bar(x - w / 2, counts_sae, w, label="SAE features", color="C0")
     ax.bar(x + w / 2, counts_neu, w, label="ESM neurons", color="C1")
-    ax.set_xticks(x)
-    ax.set_xticklabels(concepts, rotation=35, ha="right", fontsize=9)
+    # With 100+ concepts, label every bar only if small.
+    if len(concepts) <= 20:
+        ax.set_xticks(x)
+        ax.set_xticklabels(concepts, rotation=35, ha="right", fontsize=9)
+    else:
+        ax.set_xticks([])
+        ax.set_xlabel(f"{len(concepts)} concepts (labels omitted)")
     ax.set_ylabel("# units with F1 ≥ 0.5")
     ax.set_yscale("symlog")
     ax.set_title("Per-concept coverage by SAE features vs raw ESM neurons")

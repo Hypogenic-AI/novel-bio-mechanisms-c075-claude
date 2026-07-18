@@ -1,7 +1,10 @@
 """Global experiment configuration."""
+from __future__ import annotations
+
+import os
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(os.environ.get("NOVEL_BIO_ROOT", Path(__file__).resolve().parent.parent))
 
 # Datasets
 SWISSPROT_FASTA = ROOT / "datasets" / "swissprot" / "full_human_proteome.fasta"
@@ -47,4 +50,5 @@ N_CONTROL_RESIDUES_PER_PROT = 10
 
 # Device
 import torch
+
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"

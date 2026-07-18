@@ -1,0 +1,1314 @@
+[
+  {
+    "concept": "Active site::ANY",
+    "feature_type": "Active site",
+    "description": "ANY",
+    "grain": "any",
+    "n_domains": 258,
+    "n_positive_residues": 258
+  },
+  {
+    "concept": "Active site::(none)",
+    "feature_type": "Active site",
+    "description": "(none)",
+    "grain": "subtype",
+    "n_domains": 79,
+    "n_positive_residues": 79
+  },
+  {
+    "concept": "Active site::Charge relay system",
+    "feature_type": "Active site",
+    "description": "Charge relay system",
+    "grain": "subtype",
+    "n_domains": 55,
+    "n_positive_residues": 55
+  },
+  {
+    "concept": "Active site::Nucleophile",
+    "feature_type": "Active site",
+    "description": "Nucleophile",
+    "grain": "subtype",
+    "n_domains": 31,
+    "n_positive_residues": 31
+  },
+  {
+    "concept": "Active site::Proton acceptor",
+    "feature_type": "Active site",
+    "description": "Proton acceptor",
+    "grain": "subtype",
+    "n_domains": 37,
+    "n_positive_residues": 37
+  },
+  {
+    "concept": "Active site::Proton donor",
+    "feature_type": "Active site",
+    "description": "Proton donor",
+    "grain": "subtype",
+    "n_domains": 17,
+    "n_positive_residues": 17
+  },
+  {
+    "concept": "Beta strand::ANY",
+    "feature_type": "Beta strand",
+    "description": "ANY",
+    "grain": "any",
+    "n_domains": 4530,
+    "n_positive_residues": 26267
+  },
+  {
+    "concept": "Beta strand::(none)",
+    "feature_type": "Beta strand",
+    "description": "(none)",
+    "grain": "subtype",
+    "n_domains": 4530,
+    "n_positive_residues": 26267
+  },
+  {
+    "concept": "Binding site::ANY",
+    "feature_type": "Binding site",
+    "description": "ANY",
+    "grain": "any",
+    "n_domains": 1597,
+    "n_positive_residues": 2673
+  },
+  {
+    "concept": "Binding site::(none)",
+    "feature_type": "Binding site",
+    "description": "(none)",
+    "grain": "subtype",
+    "n_domains": 1577,
+    "n_positive_residues": 2653
+  },
+  {
+    "concept": "Coiled coil::ANY",
+    "feature_type": "Coiled coil",
+    "description": "ANY",
+    "grain": "any",
+    "n_domains": 105,
+    "n_positive_residues": 6773
+  },
+  {
+    "concept": "Coiled coil::(none)",
+    "feature_type": "Coiled coil",
+    "description": "(none)",
+    "grain": "subtype",
+    "n_domains": 105,
+    "n_positive_residues": 6773
+  },
+  {
+    "concept": "Compositional bias::ANY",
+    "feature_type": "Compositional bias",
+    "description": "ANY",
+    "grain": "any",
+    "n_domains": 1138,
+    "n_positive_residues": 18832
+  },
+  {
+    "concept": "Compositional bias::Acidic residues",
+    "feature_type": "Compositional bias",
+    "description": "Acidic residues",
+    "grain": "subtype",
+    "n_domains": 106,
+    "n_positive_residues": 1806
+  },
+  {
+    "concept": "Compositional bias::Basic and acidic residues",
+    "feature_type": "Compositional bias",
+    "description": "Basic and acidic residues",
+    "grain": "subtype",
+    "n_domains": 320,
+    "n_positive_residues": 5515
+  },
+  {
+    "concept": "Compositional bias::Basic residues",
+    "feature_type": "Compositional bias",
+    "description": "Basic residues",
+    "grain": "subtype",
+    "n_domains": 119,
+    "n_positive_residues": 2150
+  },
+  {
+    "concept": "Compositional bias::Gly residues",
+    "feature_type": "Compositional bias",
+    "description": "Gly residues",
+    "grain": "subtype",
+    "n_domains": 55,
+    "n_positive_residues": 925
+  },
+  {
+    "concept": "Compositional bias::Low complexity",
+    "feature_type": "Compositional bias",
+    "description": "Low complexity",
+    "grain": "subtype",
+    "n_domains": 252,
+    "n_positive_residues": 4100
+  },
+  {
+    "concept": "Compositional bias::Polar residues",
+    "feature_type": "Compositional bias",
+    "description": "Polar residues",
+    "grain": "subtype",
+    "n_domains": 205,
+    "n_positive_residues": 3146
+  },
+  {
+    "concept": "Compositional bias::Pro residues",
+    "feature_type": "Compositional bias",
+    "description": "Pro residues",
+    "grain": "subtype",
+    "n_domains": 81,
+    "n_positive_residues": 1190
+  },
+  {
+    "concept": "Cross-link::ANY",
+    "feature_type": "Cross-link",
+    "description": "ANY",
+    "grain": "any",
+    "n_domains": 314,
+    "n_positive_residues": 301
+  },
+  {
+    "concept": "Cross-link::Glycyl lysine isopeptide (Lys-Gly) (interchain with G-Cter in SUMO)",
+    "feature_type": "Cross-link",
+    "description": "Glycyl lysine isopeptide (Lys-Gly) (interchain with G-Cter in SUMO)",
+    "grain": "subtype",
+    "n_domains": 10,
+    "n_positive_residues": 10
+  },
+  {
+    "concept": "Cross-link::Glycyl lysine isopeptide (Lys-Gly) (interchain with G-Cter in SUMO2)",
+    "feature_type": "Cross-link",
+    "description": "Glycyl lysine isopeptide (Lys-Gly) (interchain with G-Cter in SUMO2)",
+    "grain": "subtype",
+    "n_domains": 179,
+    "n_positive_residues": 179
+  },
+  {
+    "concept": "Cross-link::Glycyl lysine isopeptide (Lys-Gly) (interchain with G-Cter in SUMO2); alternate",
+    "feature_type": "Cross-link",
+    "description": "Glycyl lysine isopeptide (Lys-Gly) (interchain with G-Cter in SUMO2); alternate",
+    "grain": "subtype",
+    "n_domains": 29,
+    "n_positive_residues": 29
+  },
+  {
+    "concept": "Cross-link::Glycyl lysine isopeptide (Lys-Gly) (interchain with G-Cter in ubiquitin)",
+    "feature_type": "Cross-link",
+    "description": "Glycyl lysine isopeptide (Lys-Gly) (interchain with G-Cter in ubiquitin)",
+    "grain": "subtype",
+    "n_domains": 54,
+    "n_positive_residues": 54
+  },
+  {
+    "concept": "Cross-link::Glycyl lysine isopeptide (Lys-Gly) (interchain with G-Cter in ubiquitin); alternate",
+    "feature_type": "Cross-link",
+    "description": "Glycyl lysine isopeptide (Lys-Gly) (interchain with G-Cter in ubiquitin); alternate",
+    "grain": "subtype",
+    "n_domains": 14,
+    "n_positive_residues": 14
+  },
+  {
+    "concept": "DNA binding::ANY",
+    "feature_type": "DNA binding",
+    "description": "ANY",
+    "grain": "any",
+    "n_domains": 57,
+    "n_positive_residues": 3766
+  },
+  {
+    "concept": "DNA binding::Homeobox",
+    "feature_type": "DNA binding",
+    "description": "Homeobox",
+    "grain": "subtype",
+    "n_domains": 27,
+    "n_positive_residues": 1626
+  },
+  {
+    "concept": "Disulfide bond::ANY",
+    "feature_type": "Disulfide bond",
+    "description": "ANY",
+    "grain": "any",
+    "n_domains": 738,
+    "n_positive_residues": 27494
+  },
+  {
+    "concept": "Disulfide bond::(none)",
+    "feature_type": "Disulfide bond",
+    "description": "(none)",
+    "grain": "subtype",
+    "n_domains": 692,
+    "n_positive_residues": 27061
+  },
+  {
+    "concept": "Domain::ANY",
+    "feature_type": "Domain",
+    "description": "ANY",
+    "grain": "any",
+    "n_domains": 762,
+    "n_positive_residues": 79357
+  },
+  {
+    "concept": "Domain::EF-hand 1",
+    "feature_type": "Domain",
+    "description": "EF-hand 1",
+    "grain": "subtype",
+    "n_domains": 16,
+    "n_positive_residues": 560
+  },
+  {
+    "concept": "Domain::EF-hand 2",
+    "feature_type": "Domain",
+    "description": "EF-hand 2",
+    "grain": "subtype",
+    "n_domains": 18,
+    "n_positive_residues": 630
+  },
+  {
+    "concept": "Domain::EF-hand 3",
+    "feature_type": "Domain",
+    "description": "EF-hand 3",
+    "grain": "subtype",
+    "n_domains": 11,
+    "n_positive_residues": 396
+  },
+  {
+    "concept": "Domain::IF rod",
+    "feature_type": "Domain",
+    "description": "IF rod",
+    "grain": "subtype",
+    "n_domains": 4,
+    "n_positive_residues": 1074
+  },
+  {
+    "concept": "Domain::Ig-like",
+    "feature_type": "Domain",
+    "description": "Ig-like",
+    "grain": "subtype",
+    "n_domains": 43,
+    "n_positive_residues": 4127
+  },
+  {
+    "concept": "Domain::Ig-like C2-type 1",
+    "feature_type": "Domain",
+    "description": "Ig-like C2-type 1",
+    "grain": "subtype",
+    "n_domains": 14,
+    "n_positive_residues": 1190
+  },
+  {
+    "concept": "Domain::Ig-like C2-type 2",
+    "feature_type": "Domain",
+    "description": "Ig-like C2-type 2",
+    "grain": "subtype",
+    "n_domains": 14,
+    "n_positive_residues": 1188
+  },
+  {
+    "concept": "Domain::Ig-like V-type",
+    "feature_type": "Domain",
+    "description": "Ig-like V-type",
+    "grain": "subtype",
+    "n_domains": 16,
+    "n_positive_residues": 1697
+  },
+  {
+    "concept": "Domain::J",
+    "feature_type": "Domain",
+    "description": "J",
+    "grain": "subtype",
+    "n_domains": 11,
+    "n_positive_residues": 743
+  },
+  {
+    "concept": "Domain::KRAB",
+    "feature_type": "Domain",
+    "description": "KRAB",
+    "grain": "subtype",
+    "n_domains": 18,
+    "n_positive_residues": 1334
+  },
+  {
+    "concept": "Domain::NR LBD",
+    "feature_type": "Domain",
+    "description": "NR LBD",
+    "grain": "subtype",
+    "n_domains": 5,
+    "n_positive_residues": 1218
+  },
+  {
+    "concept": "Domain::Peptidase S1",
+    "feature_type": "Domain",
+    "description": "Peptidase S1",
+    "grain": "subtype",
+    "n_domains": 12,
+    "n_positive_residues": 2772
+  },
+  {
+    "concept": "Domain::Protein kinase",
+    "feature_type": "Domain",
+    "description": "Protein kinase",
+    "grain": "subtype",
+    "n_domains": 18,
+    "n_positive_residues": 4840
+  },
+  {
+    "concept": "Domain::RRM",
+    "feature_type": "Domain",
+    "description": "RRM",
+    "grain": "subtype",
+    "n_domains": 13,
+    "n_positive_residues": 1021
+  },
+  {
+    "concept": "Domain::RRM 1",
+    "feature_type": "Domain",
+    "description": "RRM 1",
+    "grain": "subtype",
+    "n_domains": 10,
+    "n_positive_residues": 804
+  },
+  {
+    "concept": "Domain::RRM 2",
+    "feature_type": "Domain",
+    "description": "RRM 2",
+    "grain": "subtype",
+    "n_domains": 10,
+    "n_positive_residues": 783
+  },
+  {
+    "concept": "Domain::bHLH",
+    "feature_type": "Domain",
+    "description": "bHLH",
+    "grain": "subtype",
+    "n_domains": 11,
+    "n_positive_residues": 590
+  },
+  {
+    "concept": "Glycosylation::ANY",
+    "feature_type": "Glycosylation",
+    "description": "ANY",
+    "grain": "any",
+    "n_domains": 684,
+    "n_positive_residues": 684
+  },
+  {
+    "concept": "Glycosylation::N-linked (GlcNAc...) asparagine",
+    "feature_type": "Glycosylation",
+    "description": "N-linked (GlcNAc...) asparagine",
+    "grain": "subtype",
+    "n_domains": 574,
+    "n_positive_residues": 574
+  },
+  {
+    "concept": "Glycosylation::O-linked (GalNAc...) serine",
+    "feature_type": "Glycosylation",
+    "description": "O-linked (GalNAc...) serine",
+    "grain": "subtype",
+    "n_domains": 19,
+    "n_positive_residues": 19
+  },
+  {
+    "concept": "Glycosylation::O-linked (GalNAc...) threonine",
+    "feature_type": "Glycosylation",
+    "description": "O-linked (GalNAc...) threonine",
+    "grain": "subtype",
+    "n_domains": 38,
+    "n_positive_residues": 38
+  },
+  {
+    "concept": "Helix::ANY",
+    "feature_type": "Helix",
+    "description": "ANY",
+    "grain": "any",
+    "n_domains": 4440,
+    "n_positive_residues": 44609
+  },
+  {
+    "concept": "Helix::(none)",
+    "feature_type": "Helix",
+    "description": "(none)",
+    "grain": "subtype",
+    "n_domains": 4440,
+    "n_positive_residues": 44609
+  },
+  {
+    "concept": "Initiator methionine::ANY",
+    "feature_type": "Initiator methionine",
+    "description": "ANY",
+    "grain": "any",
+    "n_domains": 164,
+    "n_positive_residues": 163
+  },
+  {
+    "concept": "Initiator methionine::Removed",
+    "feature_type": "Initiator methionine",
+    "description": "Removed",
+    "grain": "subtype",
+    "n_domains": 152,
+    "n_positive_residues": 151
+  },
+  {
+    "concept": "Initiator methionine::Removed; alternate",
+    "feature_type": "Initiator methionine",
+    "description": "Removed; alternate",
+    "grain": "subtype",
+    "n_domains": 12,
+    "n_positive_residues": 12
+  },
+  {
+    "concept": "Intramembrane::ANY",
+    "feature_type": "Intramembrane",
+    "description": "ANY",
+    "grain": "any",
+    "n_domains": 24,
+    "n_positive_residues": 371
+  },
+  {
+    "concept": "Lipidation::ANY",
+    "feature_type": "Lipidation",
+    "description": "ANY",
+    "grain": "any",
+    "n_domains": 100,
+    "n_positive_residues": 98
+  },
+  {
+    "concept": "Lipidation::N-myristoyl glycine",
+    "feature_type": "Lipidation",
+    "description": "N-myristoyl glycine",
+    "grain": "subtype",
+    "n_domains": 17,
+    "n_positive_residues": 17
+  },
+  {
+    "concept": "Lipidation::S-geranylgeranyl cysteine",
+    "feature_type": "Lipidation",
+    "description": "S-geranylgeranyl cysteine",
+    "grain": "subtype",
+    "n_domains": 12,
+    "n_positive_residues": 12
+  },
+  {
+    "concept": "Lipidation::S-palmitoyl cysteine",
+    "feature_type": "Lipidation",
+    "description": "S-palmitoyl cysteine",
+    "grain": "subtype",
+    "n_domains": 52,
+    "n_positive_residues": 52
+  },
+  {
+    "concept": "Modified residue::ANY",
+    "feature_type": "Modified residue",
+    "description": "ANY",
+    "grain": "any",
+    "n_domains": 2599,
+    "n_positive_residues": 2189
+  },
+  {
+    "concept": "Modified residue::Asymmetric dimethylarginine",
+    "feature_type": "Modified residue",
+    "description": "Asymmetric dimethylarginine",
+    "grain": "subtype",
+    "n_domains": 11,
+    "n_positive_residues": 11
+  },
+  {
+    "concept": "Modified residue::Asymmetric dimethylarginine; alternate",
+    "feature_type": "Modified residue",
+    "description": "Asymmetric dimethylarginine; alternate",
+    "grain": "subtype",
+    "n_domains": 15,
+    "n_positive_residues": 15
+  },
+  {
+    "concept": "Modified residue::Cysteine methyl ester",
+    "feature_type": "Modified residue",
+    "description": "Cysteine methyl ester",
+    "grain": "subtype",
+    "n_domains": 14,
+    "n_positive_residues": 14
+  },
+  {
+    "concept": "Modified residue::Dimethylated arginine; alternate",
+    "feature_type": "Modified residue",
+    "description": "Dimethylated arginine; alternate",
+    "grain": "subtype",
+    "n_domains": 12,
+    "n_positive_residues": 12
+  },
+  {
+    "concept": "Modified residue::N-acetylalanine",
+    "feature_type": "Modified residue",
+    "description": "N-acetylalanine",
+    "grain": "subtype",
+    "n_domains": 64,
+    "n_positive_residues": 64
+  },
+  {
+    "concept": "Modified residue::N-acetylmethionine",
+    "feature_type": "Modified residue",
+    "description": "N-acetylmethionine",
+    "grain": "subtype",
+    "n_domains": 49,
+    "n_positive_residues": 49
+  },
+  {
+    "concept": "Modified residue::N-acetylserine",
+    "feature_type": "Modified residue",
+    "description": "N-acetylserine",
+    "grain": "subtype",
+    "n_domains": 36,
+    "n_positive_residues": 35
+  },
+  {
+    "concept": "Modified residue::N6,N6,N6-trimethyllysine; alternate",
+    "feature_type": "Modified residue",
+    "description": "N6,N6,N6-trimethyllysine; alternate",
+    "grain": "subtype",
+    "n_domains": 13,
+    "n_positive_residues": 13
+  },
+  {
+    "concept": "Modified residue::N6,N6-dimethyllysine; alternate",
+    "feature_type": "Modified residue",
+    "description": "N6,N6-dimethyllysine; alternate",
+    "grain": "subtype",
+    "n_domains": 12,
+    "n_positive_residues": 12
+  },
+  {
+    "concept": "Modified residue::N6-(2-hydroxyisobutyryl)lysine",
+    "feature_type": "Modified residue",
+    "description": "N6-(2-hydroxyisobutyryl)lysine",
+    "grain": "subtype",
+    "n_domains": 19,
+    "n_positive_residues": 19
+  },
+  {
+    "concept": "Modified residue::N6-(2-hydroxyisobutyryl)lysine; alternate",
+    "feature_type": "Modified residue",
+    "description": "N6-(2-hydroxyisobutyryl)lysine; alternate",
+    "grain": "subtype",
+    "n_domains": 53,
+    "n_positive_residues": 53
+  },
+  {
+    "concept": "Modified residue::N6-(beta-hydroxybutyryl)lysine; alternate",
+    "feature_type": "Modified residue",
+    "description": "N6-(beta-hydroxybutyryl)lysine; alternate",
+    "grain": "subtype",
+    "n_domains": 39,
+    "n_positive_residues": 39
+  },
+  {
+    "concept": "Modified residue::N6-acetyllysine",
+    "feature_type": "Modified residue",
+    "description": "N6-acetyllysine",
+    "grain": "subtype",
+    "n_domains": 176,
+    "n_positive_residues": 176
+  },
+  {
+    "concept": "Modified residue::N6-acetyllysine; alternate",
+    "feature_type": "Modified residue",
+    "description": "N6-acetyllysine; alternate",
+    "grain": "subtype",
+    "n_domains": 86,
+    "n_positive_residues": 86
+  },
+  {
+    "concept": "Modified residue::N6-benzoyllysine; alternate",
+    "feature_type": "Modified residue",
+    "description": "N6-benzoyllysine; alternate",
+    "grain": "subtype",
+    "n_domains": 25,
+    "n_positive_residues": 25
+  },
+  {
+    "concept": "Modified residue::N6-crotonyllysine; alternate",
+    "feature_type": "Modified residue",
+    "description": "N6-crotonyllysine; alternate",
+    "grain": "subtype",
+    "n_domains": 32,
+    "n_positive_residues": 32
+  },
+  {
+    "concept": "Modified residue::N6-glutaryllysine; alternate",
+    "feature_type": "Modified residue",
+    "description": "N6-glutaryllysine; alternate",
+    "grain": "subtype",
+    "n_domains": 29,
+    "n_positive_residues": 29
+  },
+  {
+    "concept": "Modified residue::N6-isonicotinyllysine; alternate",
+    "feature_type": "Modified residue",
+    "description": "N6-isonicotinyllysine; alternate",
+    "grain": "subtype",
+    "n_domains": 28,
+    "n_positive_residues": 28
+  },
+  {
+    "concept": "Modified residue::N6-lactoyllysine; alternate",
+    "feature_type": "Modified residue",
+    "description": "N6-lactoyllysine; alternate",
+    "grain": "subtype",
+    "n_domains": 36,
+    "n_positive_residues": 36
+  },
+  {
+    "concept": "Modified residue::N6-methacryllysine; alternate",
+    "feature_type": "Modified residue",
+    "description": "N6-methacryllysine; alternate",
+    "grain": "subtype",
+    "n_domains": 34,
+    "n_positive_residues": 34
+  },
+  {
+    "concept": "Modified residue::N6-methyllysine",
+    "feature_type": "Modified residue",
+    "description": "N6-methyllysine",
+    "grain": "subtype",
+    "n_domains": 10,
+    "n_positive_residues": 10
+  },
+  {
+    "concept": "Modified residue::N6-methyllysine; alternate",
+    "feature_type": "Modified residue",
+    "description": "N6-methyllysine; alternate",
+    "grain": "subtype",
+    "n_domains": 23,
+    "n_positive_residues": 23
+  },
+  {
+    "concept": "Modified residue::N6-succinyllysine",
+    "feature_type": "Modified residue",
+    "description": "N6-succinyllysine",
+    "grain": "subtype",
+    "n_domains": 23,
+    "n_positive_residues": 23
+  },
+  {
+    "concept": "Modified residue::N6-succinyllysine; alternate",
+    "feature_type": "Modified residue",
+    "description": "N6-succinyllysine; alternate",
+    "grain": "subtype",
+    "n_domains": 49,
+    "n_positive_residues": 49
+  },
+  {
+    "concept": "Modified residue::Omega-N-methylarginine",
+    "feature_type": "Modified residue",
+    "description": "Omega-N-methylarginine",
+    "grain": "subtype",
+    "n_domains": 33,
+    "n_positive_residues": 31
+  },
+  {
+    "concept": "Modified residue::Omega-N-methylarginine; alternate",
+    "feature_type": "Modified residue",
+    "description": "Omega-N-methylarginine; alternate",
+    "grain": "subtype",
+    "n_domains": 21,
+    "n_positive_residues": 21
+  },
+  {
+    "concept": "Modified residue::Phosphoserine",
+    "feature_type": "Modified residue",
+    "description": "Phosphoserine",
+    "grain": "subtype",
+    "n_domains": 1014,
+    "n_positive_residues": 1009
+  },
+  {
+    "concept": "Modified residue::Phosphoserine; by FAM20C",
+    "feature_type": "Modified residue",
+    "description": "Phosphoserine; by FAM20C",
+    "grain": "subtype",
+    "n_domains": 33,
+    "n_positive_residues": 33
+  },
+  {
+    "concept": "Modified residue::Phosphothreonine",
+    "feature_type": "Modified residue",
+    "description": "Phosphothreonine",
+    "grain": "subtype",
+    "n_domains": 184,
+    "n_positive_residues": 184
+  },
+  {
+    "concept": "Modified residue::Phosphotyrosine",
+    "feature_type": "Modified residue",
+    "description": "Phosphotyrosine",
+    "grain": "subtype",
+    "n_domains": 58,
+    "n_positive_residues": 58
+  },
+  {
+    "concept": "Modified residue::S-nitrosocysteine",
+    "feature_type": "Modified residue",
+    "description": "S-nitrosocysteine",
+    "grain": "subtype",
+    "n_domains": 10,
+    "n_positive_residues": 10
+  },
+  {
+    "concept": "Modified residue::Sulfotyrosine",
+    "feature_type": "Modified residue",
+    "description": "Sulfotyrosine",
+    "grain": "subtype",
+    "n_domains": 12,
+    "n_positive_residues": 12
+  },
+  {
+    "concept": "Motif::ANY",
+    "feature_type": "Motif",
+    "description": "ANY",
+    "grain": "any",
+    "n_domains": 214,
+    "n_positive_residues": 1743
+  },
+  {
+    "concept": "Motif::Nuclear localization signal",
+    "feature_type": "Motif",
+    "description": "Nuclear localization signal",
+    "grain": "subtype",
+    "n_domains": 30,
+    "n_positive_residues": 307
+  },
+  {
+    "concept": "Non-terminal residue::ANY",
+    "feature_type": "Non-terminal residue",
+    "description": "ANY",
+    "grain": "any",
+    "n_domains": 44,
+    "n_positive_residues": 44
+  },
+  {
+    "concept": "Non-terminal residue::(none)",
+    "feature_type": "Non-terminal residue",
+    "description": "(none)",
+    "grain": "subtype",
+    "n_domains": 44,
+    "n_positive_residues": 44
+  },
+  {
+    "concept": "Peptide::ANY",
+    "feature_type": "Peptide",
+    "description": "ANY",
+    "grain": "any",
+    "n_domains": 31,
+    "n_positive_residues": 735
+  },
+  {
+    "concept": "Propeptide::ANY",
+    "feature_type": "Propeptide",
+    "description": "ANY",
+    "grain": "any",
+    "n_domains": 73,
+    "n_positive_residues": 3162
+  },
+  {
+    "concept": "Propeptide::(none)",
+    "feature_type": "Propeptide",
+    "description": "(none)",
+    "grain": "subtype",
+    "n_domains": 38,
+    "n_positive_residues": 2499
+  },
+  {
+    "concept": "Propeptide::Activation peptide",
+    "feature_type": "Propeptide",
+    "description": "Activation peptide",
+    "grain": "subtype",
+    "n_domains": 12,
+    "n_positive_residues": 386
+  },
+  {
+    "concept": "Propeptide::Removed in mature form",
+    "feature_type": "Propeptide",
+    "description": "Removed in mature form",
+    "grain": "subtype",
+    "n_domains": 21,
+    "n_positive_residues": 199
+  },
+  {
+    "concept": "Region::ANY",
+    "feature_type": "Region",
+    "description": "ANY",
+    "grain": "any",
+    "n_domains": 1590,
+    "n_positive_residues": 73965
+  },
+  {
+    "concept": "Region::Complementarity-determining-1",
+    "feature_type": "Region",
+    "description": "Complementarity-determining-1",
+    "grain": "subtype",
+    "n_domains": 22,
+    "n_positive_residues": 233
+  },
+  {
+    "concept": "Region::Complementarity-determining-2",
+    "feature_type": "Region",
+    "description": "Complementarity-determining-2",
+    "grain": "subtype",
+    "n_domains": 23,
+    "n_positive_residues": 152
+  },
+  {
+    "concept": "Region::Complementarity-determining-3",
+    "feature_type": "Region",
+    "description": "Complementarity-determining-3",
+    "grain": "subtype",
+    "n_domains": 21,
+    "n_positive_residues": 125
+  },
+  {
+    "concept": "Region::Disordered",
+    "feature_type": "Region",
+    "description": "Disordered",
+    "grain": "subtype",
+    "n_domains": 987,
+    "n_positive_residues": 50502
+  },
+  {
+    "concept": "Region::Framework-1",
+    "feature_type": "Region",
+    "description": "Framework-1",
+    "grain": "subtype",
+    "n_domains": 22,
+    "n_positive_residues": 527
+  },
+  {
+    "concept": "Region::Framework-2",
+    "feature_type": "Region",
+    "description": "Framework-2",
+    "grain": "subtype",
+    "n_domains": 22,
+    "n_positive_residues": 354
+  },
+  {
+    "concept": "Region::Framework-3",
+    "feature_type": "Region",
+    "description": "Framework-3",
+    "grain": "subtype",
+    "n_domains": 22,
+    "n_positive_residues": 770
+  },
+  {
+    "concept": "Region::Leucine-zipper",
+    "feature_type": "Region",
+    "description": "Leucine-zipper",
+    "grain": "subtype",
+    "n_domains": 10,
+    "n_positive_residues": 219
+  },
+  {
+    "concept": "Repeat::ANY",
+    "feature_type": "Repeat",
+    "description": "ANY",
+    "grain": "any",
+    "n_domains": 518,
+    "n_positive_residues": 12895
+  },
+  {
+    "concept": "Repeat::1",
+    "feature_type": "Repeat",
+    "description": "1",
+    "grain": "subtype",
+    "n_domains": 16,
+    "n_positive_residues": 206
+  },
+  {
+    "concept": "Repeat::2",
+    "feature_type": "Repeat",
+    "description": "2",
+    "grain": "subtype",
+    "n_domains": 16,
+    "n_positive_residues": 206
+  },
+  {
+    "concept": "Repeat::3",
+    "feature_type": "Repeat",
+    "description": "3",
+    "grain": "subtype",
+    "n_domains": 13,
+    "n_positive_residues": 115
+  },
+  {
+    "concept": "Repeat::4",
+    "feature_type": "Repeat",
+    "description": "4",
+    "grain": "subtype",
+    "n_domains": 13,
+    "n_positive_residues": 115
+  },
+  {
+    "concept": "Repeat::5",
+    "feature_type": "Repeat",
+    "description": "5",
+    "grain": "subtype",
+    "n_domains": 11,
+    "n_positive_residues": 97
+  },
+  {
+    "concept": "Repeat::6",
+    "feature_type": "Repeat",
+    "description": "6",
+    "grain": "subtype",
+    "n_domains": 11,
+    "n_positive_residues": 97
+  },
+  {
+    "concept": "Repeat::7",
+    "feature_type": "Repeat",
+    "description": "7",
+    "grain": "subtype",
+    "n_domains": 10,
+    "n_positive_residues": 89
+  },
+  {
+    "concept": "Repeat::CXXCXGXG motif",
+    "feature_type": "Repeat",
+    "description": "CXXCXGXG motif",
+    "grain": "subtype",
+    "n_domains": 12,
+    "n_positive_residues": 96
+  },
+  {
+    "concept": "Repeat::WD 1",
+    "feature_type": "Repeat",
+    "description": "WD 1",
+    "grain": "subtype",
+    "n_domains": 11,
+    "n_positive_residues": 449
+  },
+  {
+    "concept": "Repeat::WD 2",
+    "feature_type": "Repeat",
+    "description": "WD 2",
+    "grain": "subtype",
+    "n_domains": 11,
+    "n_positive_residues": 463
+  },
+  {
+    "concept": "Repeat::WD 3",
+    "feature_type": "Repeat",
+    "description": "WD 3",
+    "grain": "subtype",
+    "n_domains": 10,
+    "n_positive_residues": 400
+  },
+  {
+    "concept": "Repeat::WD 4",
+    "feature_type": "Repeat",
+    "description": "WD 4",
+    "grain": "subtype",
+    "n_domains": 10,
+    "n_positive_residues": 414
+  },
+  {
+    "concept": "Repeat::WD 5",
+    "feature_type": "Repeat",
+    "description": "WD 5",
+    "grain": "subtype",
+    "n_domains": 10,
+    "n_positive_residues": 419
+  },
+  {
+    "concept": "Repeat::WD 6",
+    "feature_type": "Repeat",
+    "description": "WD 6",
+    "grain": "subtype",
+    "n_domains": 10,
+    "n_positive_residues": 426
+  },
+  {
+    "concept": "Signal::ANY",
+    "feature_type": "Signal",
+    "description": "ANY",
+    "grain": "any",
+    "n_domains": 256,
+    "n_positive_residues": 5914
+  },
+  {
+    "concept": "Signal::(none)",
+    "feature_type": "Signal",
+    "description": "(none)",
+    "grain": "subtype",
+    "n_domains": 254,
+    "n_positive_residues": 5881
+  },
+  {
+    "concept": "Site::ANY",
+    "feature_type": "Site",
+    "description": "ANY",
+    "grain": "any",
+    "n_domains": 195,
+    "n_positive_residues": 269
+  },
+  {
+    "concept": "Site::(Microbial infection) Cleavage; by N.americanus apr-2",
+    "feature_type": "Site",
+    "description": "(Microbial infection) Cleavage; by N.americanus apr-2",
+    "grain": "subtype",
+    "n_domains": 14,
+    "n_positive_residues": 28
+  },
+  {
+    "concept": "Topological domain::ANY",
+    "feature_type": "Topological domain",
+    "description": "ANY",
+    "grain": "any",
+    "n_domains": 1477,
+    "n_positive_residues": 61407
+  },
+  {
+    "concept": "Topological domain::Cytoplasmic",
+    "feature_type": "Topological domain",
+    "description": "Cytoplasmic",
+    "grain": "subtype",
+    "n_domains": 736,
+    "n_positive_residues": 25209
+  },
+  {
+    "concept": "Topological domain::Extracellular",
+    "feature_type": "Topological domain",
+    "description": "Extracellular",
+    "grain": "subtype",
+    "n_domains": 612,
+    "n_positive_residues": 26583
+  },
+  {
+    "concept": "Topological domain::Lumenal",
+    "feature_type": "Topological domain",
+    "description": "Lumenal",
+    "grain": "subtype",
+    "n_domains": 67,
+    "n_positive_residues": 7511
+  },
+  {
+    "concept": "Topological domain::Mitochondrial intermembrane",
+    "feature_type": "Topological domain",
+    "description": "Mitochondrial intermembrane",
+    "grain": "subtype",
+    "n_domains": 33,
+    "n_positive_residues": 913
+  },
+  {
+    "concept": "Topological domain::Mitochondrial matrix",
+    "feature_type": "Topological domain",
+    "description": "Mitochondrial matrix",
+    "grain": "subtype",
+    "n_domains": 17,
+    "n_positive_residues": 412
+  },
+  {
+    "concept": "Transit peptide::ANY",
+    "feature_type": "Transit peptide",
+    "description": "ANY",
+    "grain": "any",
+    "n_domains": 42,
+    "n_positive_residues": 1346
+  },
+  {
+    "concept": "Transit peptide::Mitochondrion",
+    "feature_type": "Transit peptide",
+    "description": "Mitochondrion",
+    "grain": "subtype",
+    "n_domains": 42,
+    "n_positive_residues": 1346
+  },
+  {
+    "concept": "Transmembrane::ANY",
+    "feature_type": "Transmembrane",
+    "description": "ANY",
+    "grain": "any",
+    "n_domains": 1498,
+    "n_positive_residues": 31658
+  },
+  {
+    "concept": "Transmembrane::Beta stranded",
+    "feature_type": "Transmembrane",
+    "description": "Beta stranded",
+    "grain": "subtype",
+    "n_domains": 19,
+    "n_positive_residues": 137
+  },
+  {
+    "concept": "Transmembrane::Helical",
+    "feature_type": "Transmembrane",
+    "description": "Helical",
+    "grain": "subtype",
+    "n_domains": 628,
+    "n_positive_residues": 13232
+  },
+  {
+    "concept": "Transmembrane::Helical; Name=1",
+    "feature_type": "Transmembrane",
+    "description": "Helical; Name=1",
+    "grain": "subtype",
+    "n_domains": 117,
+    "n_positive_residues": 2587
+  },
+  {
+    "concept": "Transmembrane::Helical; Name=2",
+    "feature_type": "Transmembrane",
+    "description": "Helical; Name=2",
+    "grain": "subtype",
+    "n_domains": 117,
+    "n_positive_residues": 2514
+  },
+  {
+    "concept": "Transmembrane::Helical; Name=3",
+    "feature_type": "Transmembrane",
+    "description": "Helical; Name=3",
+    "grain": "subtype",
+    "n_domains": 116,
+    "n_positive_residues": 2427
+  },
+  {
+    "concept": "Transmembrane::Helical; Name=4",
+    "feature_type": "Transmembrane",
+    "description": "Helical; Name=4",
+    "grain": "subtype",
+    "n_domains": 113,
+    "n_positive_residues": 2344
+  },
+  {
+    "concept": "Transmembrane::Helical; Name=5",
+    "feature_type": "Transmembrane",
+    "description": "Helical; Name=5",
+    "grain": "subtype",
+    "n_domains": 108,
+    "n_positive_residues": 2359
+  },
+  {
+    "concept": "Transmembrane::Helical; Name=6",
+    "feature_type": "Transmembrane",
+    "description": "Helical; Name=6",
+    "grain": "subtype",
+    "n_domains": 107,
+    "n_positive_residues": 2348
+  },
+  {
+    "concept": "Transmembrane::Helical; Name=7",
+    "feature_type": "Transmembrane",
+    "description": "Helical; Name=7",
+    "grain": "subtype",
+    "n_domains": 96,
+    "n_positive_residues": 2007
+  },
+  {
+    "concept": "Transmembrane::Helical; Signal-anchor for type II membrane protein",
+    "feature_type": "Transmembrane",
+    "description": "Helical; Signal-anchor for type II membrane protein",
+    "grain": "subtype",
+    "n_domains": 23,
+    "n_positive_residues": 471
+  },
+  {
+    "concept": "Turn::ANY",
+    "feature_type": "Turn",
+    "description": "ANY",
+    "grain": "any",
+    "n_domains": 1189,
+    "n_positive_residues": 4162
+  },
+  {
+    "concept": "Turn::(none)",
+    "feature_type": "Turn",
+    "description": "(none)",
+    "grain": "subtype",
+    "n_domains": 1189,
+    "n_positive_residues": 4162
+  },
+  {
+    "concept": "Zinc finger::ANY",
+    "feature_type": "Zinc finger",
+    "description": "ANY",
+    "grain": "any",
+    "n_domains": 307,
+    "n_positive_residues": 8402
+  },
+  {
+    "concept": "Zinc finger::C2H2-type 1",
+    "feature_type": "Zinc finger",
+    "description": "C2H2-type 1",
+    "grain": "subtype",
+    "n_domains": 26,
+    "n_positive_residues": 607
+  },
+  {
+    "concept": "Zinc finger::C2H2-type 2",
+    "feature_type": "Zinc finger",
+    "description": "C2H2-type 2",
+    "grain": "subtype",
+    "n_domains": 29,
+    "n_positive_residues": 675
+  },
+  {
+    "concept": "Zinc finger::C2H2-type 3",
+    "feature_type": "Zinc finger",
+    "description": "C2H2-type 3",
+    "grain": "subtype",
+    "n_domains": 31,
+    "n_positive_residues": 720
+  },
+  {
+    "concept": "Zinc finger::C2H2-type 4",
+    "feature_type": "Zinc finger",
+    "description": "C2H2-type 4",
+    "grain": "subtype",
+    "n_domains": 28,
+    "n_positive_residues": 651
+  },
+  {
+    "concept": "Zinc finger::C2H2-type 5",
+    "feature_type": "Zinc finger",
+    "description": "C2H2-type 5",
+    "grain": "subtype",
+    "n_domains": 22,
+    "n_positive_residues": 506
+  },
+  {
+    "concept": "Zinc finger::C2H2-type 6",
+    "feature_type": "Zinc finger",
+    "description": "C2H2-type 6",
+    "grain": "subtype",
+    "n_domains": 19,
+    "n_positive_residues": 437
+  },
+  {
+    "concept": "Zinc finger::C2H2-type 7",
+    "feature_type": "Zinc finger",
+    "description": "C2H2-type 7",
+    "grain": "subtype",
+    "n_domains": 17,
+    "n_positive_residues": 398
+  },
+  {
+    "concept": "Zinc finger::C2H2-type 8",
+    "feature_type": "Zinc finger",
+    "description": "C2H2-type 8",
+    "grain": "subtype",
+    "n_domains": 14,
+    "n_positive_residues": 322
+  },
+  {
+    "concept": "Zinc finger::C2H2-type 9",
+    "feature_type": "Zinc finger",
+    "description": "C2H2-type 9",
+    "grain": "subtype",
+    "n_domains": 11,
+    "n_positive_residues": 253
+  },
+  {
+    "concept": "Zinc finger::RING-type",
+    "feature_type": "Zinc finger",
+    "description": "RING-type",
+    "grain": "subtype",
+    "n_domains": 13,
+    "n_positive_residues": 540
+  }
+]

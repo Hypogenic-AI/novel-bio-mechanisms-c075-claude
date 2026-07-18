@@ -7,10 +7,13 @@ hidden state, pass it through the pretrained InterPLM SAE encoder, and store:
 
 We also store an `index.json` mapping accession -> (offset, length) so we can
 slice each protein later without keeping everything in RAM.
+
+If ``results/index.json`` already exists (e.g. from a prior run), we reuse its
+protein list and write activations with matching offsets so expanded labels stay
+aligned. Otherwise we sample from the Swiss-Prot FASTA.
 """
 from __future__ import annotations
 
-import gc
 import json
 import time
 from pathlib import Path
@@ -24,6 +27,25 @@ from transformers import AutoTokenizer, EsmModel
 
 from src import config
 from src.data import load_swissprot_subset
+
+
+def load_sae(device: str):
+    """Load InterPLM ESM-2-8M layer-4 ReLU SAE from HuggingFace."""
+    from src.sae_loader import load_interplm_sae
+
+    return load_interplm_sae(device=device)
+
+
+def load_proteins_for_extraction() -> Tuple[List[Tuple[str, str]], bool]:
+    """Return (proteins, reused_index). Prefer existing index.json for alignment."""
+    index_path = config.RESULTS / "index.json"
+    if index_path.exists():
+        with open(index_path) as f:
+            index = json.load(f)
+        proteins = [(p["accession"], p["sequence"]) for p in index["proteins"]]
+        print(f"  Reusing {len(proteins)} proteins from existing index.json")
+        return proteins, True
+    return load_swissprot_subset(), False
 
 
 def get_hidden_state(
@@ -66,10 +88,11 @@ def get_hidden_state(
 
 
 def main():
-    print(f"[{time.strftime('%H:%M:%S')}] Loading Swiss-Prot subset...")
-    proteins = load_swissprot_subset()
+    print(f"[{time.strftime('%H:%M:%S')}] Loading protein set...")
+    proteins, reused_index = load_proteins_for_extraction()
     print(f"  Loaded {len(proteins)} proteins, lengths "
           f"{min(len(s) for _, s in proteins)}–{max(len(s) for _, s in proteins)} aa")
+    print(f"  Device: {config.DEVICE}")
 
     print(f"[{time.strftime('%H:%M:%S')}] Loading ESM-2-8M ({config.ESM_MODEL})...")
     tokenizer = AutoTokenizer.from_pretrained(config.ESM_MODEL)
@@ -78,23 +101,18 @@ def main():
     model = model.to(config.DEVICE)
 
     print(f"[{time.strftime('%H:%M:%S')}] Loading InterPLM SAE...")
-    from interplm.sae.inference import load_sae_from_hf
-    sae = load_sae_from_hf(plm_model="esm2-8m", plm_layer=config.ESM_LAYER)
+    sae = load_sae(config.DEVICE)
     sae = sae.to(config.DEVICE)
-    sae.eval()
 
     # Output storage
     out_dir = config.RESULTS
     index: Dict[str, Tuple[int, int]] = {}  # accession -> (start, length)
     total_residues = 0
 
-    # We collect everything in memory (1500*200 ~= 300K residues * 320 dim hidden = ~190MB fp16,
-    # plus sparse SAE which is small)
     all_hidden: List[np.ndarray] = []
     all_sparse_features: List[sparse.csr_matrix] = []
 
-    # Batched inference
-    BATCH = 8
+    BATCH = 4 if config.DEVICE == "cpu" else 8
     for start in tqdm(range(0, len(proteins), BATCH), desc="ESM+SAE"):
         batch = proteins[start:start + BATCH]
         accs, seqs = zip(*batch)
@@ -103,12 +121,10 @@ def main():
         )
         for acc, seq, h in zip(accs, seqs, hidden_list):
             L = h.shape[0]
-            # SAE encode  -> dense (L, dict_size) then convert to sparse
             with torch.no_grad():
                 h_t = torch.from_numpy(h).to(config.DEVICE)
-                feats = sae.encode(h_t)  # (L, dict_size) ReLU SAE -> sparse
+                feats = sae.encode(h_t)  # (L, dict_size)
                 feats_np = feats.cpu().float().numpy()
-            # Sparsify (most entries are zero)
             sp = sparse.csr_matrix(feats_np)
             index[acc] = (total_residues, L)
             total_residues += L
@@ -118,7 +134,6 @@ def main():
     print(f"[{time.strftime('%H:%M:%S')}] Collected {total_residues:,} residues; "
           f"saving to disk...")
 
-    # Concatenate
     hidden_all = np.concatenate(all_hidden, axis=0)
     feats_all = sparse.vstack(all_sparse_features, format="csr")
     print(f"  hidden_all: {hidden_all.shape} ({hidden_all.dtype})")
@@ -137,6 +152,7 @@ def main():
                 "sae_dict_size": config.SAE_DICT_SIZE,
                 "esm_model": config.ESM_MODEL,
                 "esm_layer": config.ESM_LAYER,
+                "reused_prior_index": reused_index,
             },
             f,
             indent=2,
