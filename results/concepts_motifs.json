@@ -1,0 +1,26 @@
+[
+  {
+    "concept": "Motif::DRY",
+    "feature_type": "Motif",
+    "description": "DRY",
+    "grain": "motif",
+    "n_domains": 77,
+    "n_positive_residues": 231
+  },
+  {
+    "concept": "Motif::NPxxY",
+    "feature_type": "Motif",
+    "description": "NPxxY",
+    "grain": "motif",
+    "n_domains": 110,
+    "n_positive_residues": 550
+  },
+  {
+    "concept": "Motif::TGEKP",
+    "feature_type": "Motif",
+    "description": "TGEKP",
+    "grain": "motif",
+    "n_domains": 82,
+    "n_positive_residues": 492
+  }
+]

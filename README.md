@@ -31,6 +31,22 @@ on the ~80% of SAE features that show no strong Swiss-Prot concept alignment.
 
 See [REPORT.md](REPORT.md) for the full discussion, figures, and references.
 
+## Expanded labels on Modal (no LLM)
+
+After building local UniProt/motif labels and (optionally) activations:
+
+```bash
+source .venv/bin/activate
+# Upload index, labels, activations to the Modal volume
+modal run modal_app.py::sync_inputs
+# GPU: F1 → dark_features → ablation → figures
+modal run modal_app.py::run_pipeline
+# Pull results back
+modal run modal_app.py::download_results
+```
+
+`NOVEL_BIO_ROOT` on Modal points at the `/data` volume. LLM annotation is skipped.
+
 ## How to reproduce
 
 ```bash

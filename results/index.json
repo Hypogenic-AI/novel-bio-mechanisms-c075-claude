@@ -12007,5 +12007,6 @@
   "hidden_dim": 320,
   "sae_dict_size": 10240,
   "esm_model": "facebook/esm2_t6_8M_UR50D",
-  "esm_layer": 4
+  "esm_layer": 4,
+  "reused_prior_index": true
 }
